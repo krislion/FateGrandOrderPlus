@@ -88,7 +88,7 @@ namespace FateGrandOrderPlus
         // License http://www.codeproject.com/info/cpol10.aspx
         // Per license, here are the major changes I provide:
         //  1. Moved to its own class
-        //  2. Ignored color for the "smallBmp" aka Needle in other programs
+        //  2. Ignored color for the "smallBmp" aka Needle in other programs. Ignores 
         //  3. Scan moves 3 steps at a time in a loop (per-rgb-pixel instead of simply per-byte)
         //  4. I only took the searchBmp algorithm instead of the full Windows Form App
 
@@ -96,6 +96,8 @@ namespace FateGrandOrderPlus
         // If the Needle and Haystack involved are gigantic, then the worst-case search is fairly slow (can be several ms)
         private static Rectangle searchBitmap(Bitmap smallBmp, Bitmap bigBmp, double tolerance)
         {
+            const int[] ignoreColor = [ 255, 0, 220 ];
+
             BitmapData smallData =
               smallBmp.LockBits(new Rectangle(0, 0, smallBmp.Width, smallBmp.Height),
                        System.Drawing.Imaging.ImageLockMode.ReadOnly,
@@ -138,19 +140,31 @@ namespace FateGrandOrderPlus
                         {
                             int j = 0;
                             matchFound = true;
-                            for (j = 0; j < smallWidth; j++)
+                            for (j = 0; j * 3 < smallWidth; j++)
                             {
-                                //With tolerance: pSmall value should be between margins.
-                                int inf = pBig[0] - margin;
-                                int sup = pBig[0] + margin;
-                                if (sup < pSmall[0] || inf > pSmall[0])
+                                if (pSmall[0] == ignoreColor[0]
+                                    && pSmall[1] == ignoreColor[1]
+                                    && pSmall[2] == ignoreColor[2])
                                 {
-                                    matchFound = false;
-                                    break;
+                                    pBig += 3;
+                                    pSmall += 3;
+                                    continue;
                                 }
 
-                                pBig++;
-                                pSmall++;
+                                for (int cch = 0; cch < 3; cch++)
+                                {
+                                    //With tolerance: pSmall value should be between margins.
+                                    int inf = pBig[0] - margin;
+                                    int sup = pBig[0] + margin;
+                                    if (sup < pSmall[0] || inf > pSmall[0])
+                                    {
+                                        matchFound = false;
+                                        break;
+                                    }
+                                    pBig++;
+                                    pSmall++;
+                                }
+                                if (!matchFound) break;
                             }
 
                             if (!matchFound) break;
