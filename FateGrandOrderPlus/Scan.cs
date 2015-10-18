@@ -88,7 +88,7 @@ namespace FateGrandOrderPlus
         // License http://www.codeproject.com/info/cpol10.aspx
         // Per license, here are the major changes I provide:
         //  1. Moved to its own class
-        //  2. Ignored color for the "smallBmp" aka Needle in other programs. Ignores 
+        //  2. Ignored color for the "smallBmp" aka Needle in other programs. Ignores magenta (unnatural bright pink).
         //  3. Scan moves 3 steps at a time in a loop (per-rgb-pixel instead of simply per-byte)
         //  4. I only took the searchBmp algorithm instead of the full Windows Form App
 
@@ -96,8 +96,7 @@ namespace FateGrandOrderPlus
         // If the Needle and Haystack involved are gigantic, then the worst-case search is fairly slow (can be several ms)
         private static Rectangle searchBitmap(Bitmap smallBmp, Bitmap bigBmp, double tolerance)
         {
-            const int[] ignoreColor = [ 255, 0, 220 ];
-
+            IReadOnlyList<int> ignoreColor = new int[] { 255, 0, 220 };
             BitmapData smallData =
               smallBmp.LockBits(new Rectangle(0, 0, smallBmp.Width, smallBmp.Height),
                        System.Drawing.Imaging.ImageLockMode.ReadOnly,
