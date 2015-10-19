@@ -13,6 +13,7 @@ namespace FateGrandOrderPlus
     {
         public Bitmap Haystack { get; private set; }
         public Bitmap Needle { get; private set; }
+        private Rectangle region;
         class ScanParametersException : ApplicationException, ISerializable
         {
             public ScanParametersException() : base()
@@ -40,19 +41,38 @@ namespace FateGrandOrderPlus
         /// <param name="region"></param>
         public ScanParameters(Bitmap needle, Bitmap haystack, Rectangle region)
         {
-            if (region.Height < 1 || region.Width < 1)
+            //if (region.Height < 1 || region.Width < 1)
+            //{
+            //    // make wrong code fail early, rather than silently/vacuously "pass"
+            //    throw new ScanParametersException("Region must be larger than 0 pixels!");
+            //}
+            this.region = region;
+            this.Needle = needle;
+            SetHaystack(haystack);
+        }
+
+        public void SetHaystack(Bitmap haystack)
+        {
+            if (haystack == null)
             {
-                // make wrong code fail early, rather than silently/vacuously "pass"
-                throw new ScanParametersException("Region must be larger than 0 pixels!");
+                this.Haystack = null; // try again later... perhaps set it to null directly
+                return;
             }
             if (region.Height > haystack.Height || region.Width > haystack.Width)
             {
                 throw new ScanParametersException("Region chosen must be able to pull from the original haystack!");
             }
-            this.Needle = needle;
-            this.Haystack = Copy(haystack, region);
+            if (region.Height == 0 || region.Width == 0)
+            {
+                this.Haystack = haystack;
+            }
+            else
+            {
+                this.Haystack = Copy(haystack, region);
+            }
         }
-        private static Bitmap Copy(Bitmap sourceBmp, Rectangle region)
+
+        public static Bitmap Copy(Bitmap sourceBmp, Rectangle region) // Consider moving to its own more suitable location
         {
             Bitmap retval = new Bitmap(region.Width, region.Height);
             Graphics g = Graphics.FromImage(retval);
@@ -78,7 +98,7 @@ namespace FateGrandOrderPlus
         }
         private static bool Find(ScanParameters s)
         {
-            return searchBitmap(s.Needle, s.Haystack, 0.0).Height != 0;
+            return SearchBitmap(s.Needle, s.Haystack, 0.0).Height != 0;
         }
         private static bool Avoid(ScanParameters s)
         {
@@ -94,7 +114,7 @@ namespace FateGrandOrderPlus
 
         // Note: This is useful for finding "corners" and very small Bitmaps.
         // If the Needle and Haystack involved are gigantic, then the worst-case search is fairly slow (can be several ms)
-        private static Rectangle searchBitmap(Bitmap smallBmp, Bitmap bigBmp, double tolerance)
+        public static Rectangle SearchBitmap(Bitmap smallBmp, Bitmap bigBmp, double tolerance)
         {
             IReadOnlyList<int> ignoreColor = new int[] { 255, 0, 220 };
             BitmapData smallData =

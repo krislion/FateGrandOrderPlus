@@ -67,6 +67,8 @@
             this.timerPlay = new System.Windows.Forms.Timer(this.components);
             this.timerCreate = new System.Windows.Forms.Timer(this.components);
             this.labelEndPlay = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.checkBoxCanRun = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind3)).BeginInit();
@@ -90,7 +92,7 @@
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(209, 12);
+            this.buttonStart.Location = new System.Drawing.Point(281, 12);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(75, 23);
             this.buttonStart.TabIndex = 0;
@@ -100,7 +102,7 @@
             // 
             // textScenario
             // 
-            this.textScenario.Location = new System.Drawing.Point(673, 12);
+            this.textScenario.Location = new System.Drawing.Point(745, 12);
             this.textScenario.Name = "textScenario";
             this.textScenario.Size = new System.Drawing.Size(100, 20);
             this.textScenario.TabIndex = 1;
@@ -108,15 +110,15 @@
             // 
             // richTextScript
             // 
-            this.richTextScript.Location = new System.Drawing.Point(13, 12);
+            this.richTextScript.Location = new System.Drawing.Point(0, 12);
             this.richTextScript.Name = "richTextScript";
-            this.richTextScript.Size = new System.Drawing.Size(190, 248);
+            this.richTextScript.Size = new System.Drawing.Size(273, 248);
             this.richTextScript.TabIndex = 2;
             this.richTextScript.Text = "";
             // 
             // pictureFind1
             // 
-            this.pictureFind1.Location = new System.Drawing.Point(221, 91);
+            this.pictureFind1.Location = new System.Drawing.Point(293, 91);
             this.pictureFind1.Name = "pictureFind1";
             this.pictureFind1.Size = new System.Drawing.Size(100, 50);
             this.pictureFind1.TabIndex = 3;
@@ -124,7 +126,7 @@
             // 
             // pictureFind2
             // 
-            this.pictureFind2.Location = new System.Drawing.Point(221, 138);
+            this.pictureFind2.Location = new System.Drawing.Point(293, 138);
             this.pictureFind2.Name = "pictureFind2";
             this.pictureFind2.Size = new System.Drawing.Size(100, 50);
             this.pictureFind2.TabIndex = 4;
@@ -132,7 +134,7 @@
             // 
             // pictureFind3
             // 
-            this.pictureFind3.Location = new System.Drawing.Point(221, 185);
+            this.pictureFind3.Location = new System.Drawing.Point(293, 185);
             this.pictureFind3.Name = "pictureFind3";
             this.pictureFind3.Size = new System.Drawing.Size(100, 50);
             this.pictureFind3.TabIndex = 5;
@@ -140,7 +142,7 @@
             // 
             // pictureAvoid1
             // 
-            this.pictureAvoid1.Location = new System.Drawing.Point(328, 91);
+            this.pictureAvoid1.Location = new System.Drawing.Point(400, 91);
             this.pictureAvoid1.Name = "pictureAvoid1";
             this.pictureAvoid1.Size = new System.Drawing.Size(100, 50);
             this.pictureAvoid1.TabIndex = 6;
@@ -148,7 +150,7 @@
             // 
             // pictureAvoid2
             // 
-            this.pictureAvoid2.Location = new System.Drawing.Point(328, 138);
+            this.pictureAvoid2.Location = new System.Drawing.Point(400, 138);
             this.pictureAvoid2.Name = "pictureAvoid2";
             this.pictureAvoid2.Size = new System.Drawing.Size(100, 50);
             this.pictureAvoid2.TabIndex = 7;
@@ -156,7 +158,7 @@
             // 
             // pictureAvoid3
             // 
-            this.pictureAvoid3.Location = new System.Drawing.Point(328, 185);
+            this.pictureAvoid3.Location = new System.Drawing.Point(400, 185);
             this.pictureAvoid3.Name = "pictureAvoid3";
             this.pictureAvoid3.Size = new System.Drawing.Size(100, 50);
             this.pictureAvoid3.TabIndex = 8;
@@ -165,7 +167,7 @@
             // labelFind
             // 
             this.labelFind.AutoSize = true;
-            this.labelFind.Location = new System.Drawing.Point(227, 74);
+            this.labelFind.Location = new System.Drawing.Point(299, 74);
             this.labelFind.Name = "labelFind";
             this.labelFind.Size = new System.Drawing.Size(93, 13);
             this.labelFind.TabIndex = 9;
@@ -174,7 +176,7 @@
             // labelAvoid
             // 
             this.labelAvoid.AutoSize = true;
-            this.labelAvoid.Location = new System.Drawing.Point(327, 74);
+            this.labelAvoid.Location = new System.Drawing.Point(399, 74);
             this.labelAvoid.Name = "labelAvoid";
             this.labelAvoid.Size = new System.Drawing.Size(106, 13);
             this.labelAvoid.TabIndex = 10;
@@ -183,7 +185,7 @@
             // labelLeftShift
             // 
             this.labelLeftShift.AutoSize = true;
-            this.labelLeftShift.Location = new System.Drawing.Point(207, 61);
+            this.labelLeftShift.Location = new System.Drawing.Point(279, 61);
             this.labelLeftShift.Name = "labelLeftShift";
             this.labelLeftShift.Size = new System.Drawing.Size(113, 13);
             this.labelLeftShift.TabIndex = 11;
@@ -192,7 +194,7 @@
             // labelRightShift
             // 
             this.labelRightShift.AutoSize = true;
-            this.labelRightShift.Location = new System.Drawing.Point(327, 61);
+            this.labelRightShift.Location = new System.Drawing.Point(399, 61);
             this.labelRightShift.Name = "labelRightShift";
             this.labelRightShift.Size = new System.Drawing.Size(120, 13);
             this.labelRightShift.TabIndex = 12;
@@ -200,21 +202,21 @@
             // 
             // numericUDFind
             // 
-            this.numericUDFind.Location = new System.Drawing.Point(277, 38);
+            this.numericUDFind.Location = new System.Drawing.Point(349, 38);
             this.numericUDFind.Name = "numericUDFind";
             this.numericUDFind.Size = new System.Drawing.Size(42, 20);
             this.numericUDFind.TabIndex = 13;
             // 
             // numericUDAvoid
             // 
-            this.numericUDAvoid.Location = new System.Drawing.Point(385, 38);
+            this.numericUDAvoid.Location = new System.Drawing.Point(457, 38);
             this.numericUDAvoid.Name = "numericUDAvoid";
             this.numericUDAvoid.Size = new System.Drawing.Size(42, 20);
             this.numericUDAvoid.TabIndex = 14;
             // 
             // textItem
             // 
-            this.textItem.Location = new System.Drawing.Point(673, 38);
+            this.textItem.Location = new System.Drawing.Point(745, 38);
             this.textItem.Name = "textItem";
             this.textItem.Size = new System.Drawing.Size(100, 20);
             this.textItem.TabIndex = 15;
@@ -222,21 +224,21 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(673, 65);
+            this.numericUpDown1.Location = new System.Drawing.Point(745, 65);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(99, 20);
             this.numericUpDown1.TabIndex = 16;
             // 
             // textX
             // 
-            this.textX.Location = new System.Drawing.Point(673, 92);
+            this.textX.Location = new System.Drawing.Point(745, 92);
             this.textX.Name = "textX";
             this.textX.Size = new System.Drawing.Size(42, 20);
             this.textX.TabIndex = 17;
             // 
             // textY
             // 
-            this.textY.Location = new System.Drawing.Point(721, 92);
+            this.textY.Location = new System.Drawing.Point(793, 92);
             this.textY.Name = "textY";
             this.textY.Size = new System.Drawing.Size(51, 20);
             this.textY.TabIndex = 18;
@@ -244,7 +246,7 @@
             // labelSpacebar
             // 
             this.labelSpacebar.AutoSize = true;
-            this.labelSpacebar.Location = new System.Drawing.Point(542, 247);
+            this.labelSpacebar.Location = new System.Drawing.Point(614, 247);
             this.labelSpacebar.Name = "labelSpacebar";
             this.labelSpacebar.Size = new System.Drawing.Size(98, 13);
             this.labelSpacebar.TabIndex = 19;
@@ -252,7 +254,7 @@
             // 
             // numericUDWidth
             // 
-            this.numericUDWidth.Location = new System.Drawing.Point(658, 131);
+            this.numericUDWidth.Location = new System.Drawing.Point(730, 131);
             this.numericUDWidth.Name = "numericUDWidth";
             this.numericUDWidth.Size = new System.Drawing.Size(53, 20);
             this.numericUDWidth.TabIndex = 20;
@@ -264,7 +266,7 @@
             // 
             // numericUDHeight
             // 
-            this.numericUDHeight.Location = new System.Drawing.Point(718, 131);
+            this.numericUDHeight.Location = new System.Drawing.Point(790, 131);
             this.numericUDHeight.Name = "numericUDHeight";
             this.numericUDHeight.Size = new System.Drawing.Size(55, 20);
             this.numericUDHeight.TabIndex = 21;
@@ -277,7 +279,7 @@
             // labelCapture
             // 
             this.labelCapture.AutoSize = true;
-            this.labelCapture.Location = new System.Drawing.Point(708, 115);
+            this.labelCapture.Location = new System.Drawing.Point(780, 115);
             this.labelCapture.Name = "labelCapture";
             this.labelCapture.Size = new System.Drawing.Size(65, 13);
             this.labelCapture.TabIndex = 22;
@@ -285,14 +287,14 @@
             // 
             // numericUDFindPost
             // 
-            this.numericUDFindPost.Location = new System.Drawing.Point(477, 38);
+            this.numericUDFindPost.Location = new System.Drawing.Point(549, 38);
             this.numericUDFindPost.Name = "numericUDFindPost";
             this.numericUDFindPost.Size = new System.Drawing.Size(42, 20);
             this.numericUDFindPost.TabIndex = 23;
             // 
             // numericUDAvoidPost
             // 
-            this.numericUDAvoidPost.Location = new System.Drawing.Point(548, 38);
+            this.numericUDAvoidPost.Location = new System.Drawing.Point(620, 38);
             this.numericUDAvoidPost.Name = "numericUDAvoidPost";
             this.numericUDAvoidPost.Size = new System.Drawing.Size(42, 20);
             this.numericUDAvoidPost.TabIndex = 24;
@@ -300,7 +302,7 @@
             // labelRightCtrl
             // 
             this.labelRightCtrl.AutoSize = true;
-            this.labelRightCtrl.Location = new System.Drawing.Point(545, 61);
+            this.labelRightCtrl.Location = new System.Drawing.Point(617, 61);
             this.labelRightCtrl.Name = "labelRightCtrl";
             this.labelRightCtrl.Size = new System.Drawing.Size(50, 13);
             this.labelRightCtrl.TabIndex = 25;
@@ -309,7 +311,7 @@
             // labelLeftCtrl
             // 
             this.labelLeftCtrl.AutoSize = true;
-            this.labelLeftCtrl.Location = new System.Drawing.Point(474, 61);
+            this.labelLeftCtrl.Location = new System.Drawing.Point(546, 61);
             this.labelLeftCtrl.Name = "labelLeftCtrl";
             this.labelLeftCtrl.Size = new System.Drawing.Size(44, 13);
             this.labelLeftCtrl.TabIndex = 26;
@@ -317,7 +319,7 @@
             // 
             // pictureFindPost3
             // 
-            this.pictureFindPost3.Location = new System.Drawing.Point(434, 185);
+            this.pictureFindPost3.Location = new System.Drawing.Point(506, 185);
             this.pictureFindPost3.Name = "pictureFindPost3";
             this.pictureFindPost3.Size = new System.Drawing.Size(100, 50);
             this.pictureFindPost3.TabIndex = 29;
@@ -325,7 +327,7 @@
             // 
             // pictureFindPost2
             // 
-            this.pictureFindPost2.Location = new System.Drawing.Point(434, 138);
+            this.pictureFindPost2.Location = new System.Drawing.Point(506, 138);
             this.pictureFindPost2.Name = "pictureFindPost2";
             this.pictureFindPost2.Size = new System.Drawing.Size(100, 50);
             this.pictureFindPost2.TabIndex = 28;
@@ -333,7 +335,7 @@
             // 
             // pictureFindPost1
             // 
-            this.pictureFindPost1.Location = new System.Drawing.Point(434, 91);
+            this.pictureFindPost1.Location = new System.Drawing.Point(506, 91);
             this.pictureFindPost1.Name = "pictureFindPost1";
             this.pictureFindPost1.Size = new System.Drawing.Size(100, 50);
             this.pictureFindPost1.TabIndex = 27;
@@ -341,7 +343,7 @@
             // 
             // pictureAvoidPost3
             // 
-            this.pictureAvoidPost3.Location = new System.Drawing.Point(540, 185);
+            this.pictureAvoidPost3.Location = new System.Drawing.Point(612, 185);
             this.pictureAvoidPost3.Name = "pictureAvoidPost3";
             this.pictureAvoidPost3.Size = new System.Drawing.Size(100, 50);
             this.pictureAvoidPost3.TabIndex = 32;
@@ -349,7 +351,7 @@
             // 
             // pictureAvoidPost2
             // 
-            this.pictureAvoidPost2.Location = new System.Drawing.Point(540, 138);
+            this.pictureAvoidPost2.Location = new System.Drawing.Point(612, 138);
             this.pictureAvoidPost2.Name = "pictureAvoidPost2";
             this.pictureAvoidPost2.Size = new System.Drawing.Size(100, 50);
             this.pictureAvoidPost2.TabIndex = 31;
@@ -357,7 +359,7 @@
             // 
             // pictureAvoidPost1
             // 
-            this.pictureAvoidPost1.Location = new System.Drawing.Point(540, 91);
+            this.pictureAvoidPost1.Location = new System.Drawing.Point(612, 91);
             this.pictureAvoidPost1.Name = "pictureAvoidPost1";
             this.pictureAvoidPost1.Size = new System.Drawing.Size(100, 50);
             this.pictureAvoidPost1.TabIndex = 30;
@@ -366,7 +368,7 @@
             // labelSpacebarGenerate
             // 
             this.labelSpacebarGenerate.AutoSize = true;
-            this.labelSpacebarGenerate.Location = new System.Drawing.Point(218, 247);
+            this.labelSpacebarGenerate.Location = new System.Drawing.Point(290, 247);
             this.labelSpacebarGenerate.Name = "labelSpacebarGenerate";
             this.labelSpacebarGenerate.Size = new System.Drawing.Size(110, 13);
             this.labelSpacebarGenerate.TabIndex = 33;
@@ -375,7 +377,7 @@
             // checkBoxCreate
             // 
             this.checkBoxCreate.AutoSize = true;
-            this.checkBoxCreate.Location = new System.Drawing.Point(291, 12);
+            this.checkBoxCreate.Location = new System.Drawing.Point(644, 12);
             this.checkBoxCreate.Name = "checkBoxCreate";
             this.checkBoxCreate.Size = new System.Drawing.Size(95, 17);
             this.checkBoxCreate.TabIndex = 35;
@@ -395,17 +397,36 @@
             // labelEndPlay
             // 
             this.labelEndPlay.AutoSize = true;
-            this.labelEndPlay.Location = new System.Drawing.Point(407, 9);
+            this.labelEndPlay.Location = new System.Drawing.Point(718, 247);
             this.labelEndPlay.Name = "labelEndPlay";
             this.labelEndPlay.Size = new System.Drawing.Size(127, 13);
             this.labelEndPlay.TabIndex = 36;
             this.labelEndPlay.Text = "To end Play, hold right-alt";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(362, 12);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(137, 23);
+            this.progressBar1.TabIndex = 37;
+            // 
+            // checkBoxCanRun
+            // 
+            this.checkBoxCanRun.AutoSize = true;
+            this.checkBoxCanRun.Location = new System.Drawing.Point(506, 12);
+            this.checkBoxCanRun.Name = "checkBoxCanRun";
+            this.checkBoxCanRun.Size = new System.Drawing.Size(114, 17);
+            this.checkBoxCanRun.TabIndex = 38;
+            this.checkBoxCanRun.Text = "Can run next item?";
+            this.checkBoxCanRun.UseVisualStyleBackColor = true;
+            // 
             // FateGrandOrderPlus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(785, 274);
+            this.ClientSize = new System.Drawing.Size(852, 274);
+            this.Controls.Add(this.checkBoxCanRun);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.labelEndPlay);
             this.Controls.Add(this.checkBoxCreate);
             this.Controls.Add(this.labelSpacebarGenerate);
@@ -444,6 +465,7 @@
             this.Controls.Add(this.buttonStart);
             this.Name = "FateGrandOrderPlus";
             this.Text = "FateGrandOrderPlus";
+            this.Load += new System.EventHandler(this.FateGrandOrderPlus_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind3)).EndInit();
@@ -508,6 +530,8 @@
         private System.Windows.Forms.Timer timerPlay;
         private System.Windows.Forms.Timer timerCreate;
         private System.Windows.Forms.Label labelEndPlay;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.CheckBox checkBoxCanRun;
     }
 }
 
