@@ -26,6 +26,7 @@ namespace FateGrandOrderPlus
                 case "SMARTDRAG": await SmartDrag(cparam, checkBoxCanRun, g, b); return;
                 case "SMARTCLICK": await SmartClick(cparam, checkBoxCanRun, g, b); return;
                 case "SMARTCLICKONFIRSTFIND": await SmartClickOnFirstFind(cparam, checkBoxCanRun, g, b); return;
+                default: await ClearCanRun(500, checkBoxCanRun); return;
             }
         }
 
@@ -36,7 +37,7 @@ namespace FateGrandOrderPlus
             return result;
         }
 
-        private static async Task SmartAction(string[] smartparam, AsyncAction a, Graphics g, Bitmap b)
+        private static async Task SmartAction(string[] smartparam, AsyncAction a, Graphics g, Bitmap b, CheckBox checkBoxCanRun)
         {
             //CLICKSCAN#NUM_F #NUM_A #NUM_FP #NUM_AP #MS_WAIT_F #MS_FSTAB #MS_WAIT_P #MS_PSTAB
             //# NAME1_FIND#X1#Y1#X2#Y2
@@ -60,107 +61,124 @@ namespace FateGrandOrderPlus
             //{
             //    preconditions = true;
             //}
-            int pre_time_waited = 0;
-            int pre_time_stabilized = 0;
-            Rectangle captureRectangle = Screen.AllScreens[0].Bounds;
-            int iterations = 0;
-            while (iterations < 5000) // break conditions inside the loop are time-based
-            {// this either times out or finds the image and sees it stabilize. no guarantee, though
-                iterations++;
-                await Task.Delay(100);
-                g.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
-                foreach (ScanParameters s in prefind)
-                {
-                    s.SetHaystack(b);
-                }
-                foreach (ScanParameters s in preavoid)
-                {
-                    s.SetHaystack(b);
-                }
-                if (Scan.Seek(prefind, preavoid))
-                {
-                    pre_time_waited = 0;
-                    pre_time_stabilized += 100;
-                    if (pre_time_stabilized > pre_time_required_to_stabilize)
+            int outiterations = 0;
+            while (!postconditions && outiterations < 5)
+            {
+                outiterations++;
+                int pre_time_waited = 0;
+                int pre_time_stabilized = 0;
+                Rectangle captureRectangle = Screen.AllScreens[0].Bounds;
+                int iterations = 0;
+                while (iterations < 5000) // break conditions inside the loop are time-based
+                {// this either times out or finds the image and sees it stabilize. no guarantee, though
+                    iterations++;
+                    await Task.Delay(100);
+                    if (checkBoxCanRun.Checked) //someone else has decided to move on to the next command, abort!
                     {
-                        preconditions = true;
-                        break;
+                        return;
+                    }
+                    g.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+                    foreach (ScanParameters s in prefind)
+                    {
+                        s.SetHaystack(b);
+                    }
+                    foreach (ScanParameters s in preavoid)
+                    {
+                        s.SetHaystack(b);
+                    }
+                    if (Scan.Seek(prefind, preavoid))
+                    {
+                        pre_time_waited = 0;
+                        pre_time_stabilized += 100;
+                        if (pre_time_stabilized > pre_time_required_to_stabilize)
+                        {
+                            preconditions = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        pre_time_waited += 100;
+                        pre_time_stabilized = 0;
+                        if (pre_time_waited > pre_time_allowed_to_find)
+                        {
+                            preconditions = false; //already set to false
+                            break;
+                        }
                     }
                 }
-                else
-                {
-                    pre_time_waited += 100;
-                    pre_time_stabilized = 0;
-                    if (pre_time_waited > pre_time_allowed_to_find)
-                    {
-                        preconditions = false; //already set to false
-                        break;
-                    }
-                }
-            }
 
-            // TAKE THE ACTION!!!
-            if (!preconditions)
-            {
-                //ERROR! take a screenshot of what defeated the automation... then click anyway
-                string[] tmpParam = { "", "ERROR_FIND_", "0", "26", "300", "480" };
-                await RecordScreenshot(tmpParam
-                    , null
-                    , g
-                    , b);
-                await a();
-            }
-            else
-            {
-                await a();
-            }
-            
-            int post_time_waited = 0;
-            int post_time_stabilized = 0;
-            iterations = 0;
-            while (iterations < 50000)
-            { // wait until settled time is exceeded
-                iterations++;
-                await Task.Delay(100);
-                g.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
-                foreach (ScanParameters s in postfind)
+                // TAKE THE ACTION!!!
+                if (!preconditions)
                 {
-                    s.SetHaystack(b);
-                }
-                foreach (ScanParameters s in postavoid)
-                {
-                    s.SetHaystack(b);
-                }
-                if (Scan.Seek(postfind, postavoid))
-                {
-                    post_time_waited = 0;
-                    post_time_stabilized += 100;
-                    if (post_time_stabilized > post_time_required_to_stabilize)
-                    {
-                        postconditions = true;
-                        break;
-                    }
+                    //ERROR! take a screenshot of what defeated the automation... then click anyway
+                    string[] tmpParam = { "", "ERROR_FIND_", "0", "26", "300", "480" };
+                    await RecordScreenshot(tmpParam
+                        , null
+                        , g
+                        , b);
+                    await
+                        a();
                 }
                 else
                 {
-                    post_time_waited += 100;
-                    post_time_stabilized = 0;
-                    if (post_time_waited > post_time_allowed_to_find)
+                    await
+                        a();
+                }
+
+                int post_time_waited = 0;
+                int post_time_stabilized = 0;
+                iterations = 0;
+                while (iterations < 50000)
+                { // wait until settled time is exceeded
+                    iterations++;
+                    await Task.Delay(200);
+                    if (checkBoxCanRun.Checked) //someone else has decided to move on to the next command, abort!
                     {
-                        postconditions = false; //already set to false
-                        break;
+                        return;
+                    }
+                    g.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+                    foreach (ScanParameters s in postfind)
+                    {
+                        s.SetHaystack(b);
+                    }
+                    foreach (ScanParameters s in postavoid)
+                    {
+                        s.SetHaystack(b);
+                    }
+                    if (Scan.Seek(postfind, postavoid))
+                    {
+                        post_time_waited = 0;
+                        post_time_stabilized += 100;
+                        if (post_time_stabilized > post_time_required_to_stabilize)
+                        {
+                            postconditions = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        post_time_waited += 100;
+                        post_time_stabilized = 0;
+                        if (post_time_waited > post_time_allowed_to_find)
+                        {
+                            postconditions = false; //already set to false
+                            break;
+                        }
                     }
                 }
+                if (!postconditions)
+                {
+                    string[] tmpParam = { "", "ERROR_POST", "0", "26", "300", "480" };
+                    await RecordScreenshot(tmpParam
+                        , null
+                        , g
+                        , b);
+                    // loop and try the action again
+                }
+                //await Task.Delay(300); // rest after completion
+                await ClearCanRun(300, checkBoxCanRun);
             }
-            if (!postconditions)
-            {
-                string[] tmpParam = { "", "ERROR_POST", "0", "26", "300", "480" };
-                await RecordScreenshot(tmpParam
-                    , null
-                    , g
-                    , b);
-            }
-            await Task.Delay(300); // rest after completion
         }
 
         static Dictionary<string, Bitmap> bmpCache = new Dictionary<string, Bitmap>();
@@ -180,8 +198,18 @@ namespace FateGrandOrderPlus
                 if (!bmpCache.ContainsKey(name))
                 {
                     String fileName = string.Format(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                        r[0]);
-                    bmpCache[name] = new Bitmap(fileName, false);
+                        @"\" + name);
+                    try
+                    {
+                        Bitmap x = (Bitmap) Image.FromFile(fileName, false);
+
+                        bmpCache[name] = x;
+                    }
+                    catch (Exception e)
+                    {
+                        // debugging
+                        string s = e.ToString();
+                    }
                 }
 
                 needle = bmpCache[name];
@@ -200,7 +228,7 @@ namespace FateGrandOrderPlus
             AsyncAction a = async () => {
                 await MouseOperations.MyDrag(x1, y1, x2, y2);
             };
-            await SmartAction(cparam.SubArray(5, cparam.Length - 5), a, g, b);
+            await SmartAction(cparam.SubArray(5, cparam.Length - 5), a, g, b, checkBoxCanRun);
         }
 
         private static async Task SmartClick(string[] cparam, CheckBox checkBoxCanRun, Graphics g, Bitmap b)
@@ -208,10 +236,12 @@ namespace FateGrandOrderPlus
             // 0 is the command choice
             int x1 = int.Parse(cparam[1]);
             int y1 = int.Parse(cparam[2]);
+
             AsyncAction a = async () => {
                 await MouseOperations.MyClickOnce(x1, y1);
             };
-            await SmartAction(cparam.SubArray(3, cparam.Length - 3), a, g, b);
+            await
+                SmartAction(cparam.SubArray(3, cparam.Length - 3), a, g, b, checkBoxCanRun);
         }
         
         private static async Task SmartClickOnFirstFind(string[] cparam, CheckBox checkBoxCanRun, Graphics g, Bitmap b)
@@ -236,7 +266,7 @@ namespace FateGrandOrderPlus
                 }
                 await MouseOperations.MyClickOnce(x, y);
             };
-            await SmartAction(cparam.SubArray(3, cparam.Length - 3), a, g, b);
+            await SmartAction(cparam.SubArray(3, cparam.Length - 3), a, g, b, checkBoxCanRun);
         }
 
         private static async Task ClearCanRun(int duration, CheckBox checkBoxCanRun)
@@ -252,7 +282,7 @@ namespace FateGrandOrderPlus
                 SendKeys.SendWait(ch.ToString());
                 await Task.Delay(120);
             }
-            await ClearCanRun(0, c);
+            await ClearCanRun(100, c);
         }
         //FullTutorial as one decision? Bad idea
         

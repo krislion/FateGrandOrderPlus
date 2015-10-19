@@ -121,26 +121,25 @@ namespace FateGrandOrderPlus
             progressBar1.Value = 0;
             // Note: does not immediately execute the next command if already running (ala next line)
             //checkBoxCanRun.Checked = true;
-
             //richTextScript.BackColor = Color.White;
             //richTextScript.Clear();
-            //richTextScript.SelectedText = "Mindcracker Network \n";
+            //richTextScript.SelectedText = "BIG TEXT\n";
             //richTextScript.SelectionFont = new Font("Verdana", 12);
             //richTextScript.SelectionBullet = true;
             //richTextScript.SelectionColor = Color.DarkBlue;
-            //richTextScript.SelectedText = "C# Corner" + "\n";
+            //richTextScript.SelectedText = "BLUE" + "\n";
             //richTextScript.SelectionFont = new Font("Verdana", 12);
             //richTextScript.SelectionColor = Color.Orange;
-            //richTextScript.SelectedText = "VB.NET Heaven" + "\n";
+            //richTextScript.SelectedText = "ORANGE" + "\n";
             //richTextScript.SelectionFont = new Font("Verdana", 12);
             //richTextScript.SelectionColor = Color.Green;
-            //richTextScript.SelectedText = ".Longhorn Corner" + "\n";
+            //richTextScript.SelectedText = ".BULLETED" + "\n";
             //richTextScript.SelectionColor = Color.Red;
-            //richTextScript.SelectedText = ".NET Heaven" + "\n";
+            //richTextScript.SelectedText = "XYZZY" + "\n";
             //richTextScript.SelectionBullet = false;
             //richTextScript.SelectionFont = new Font("Tahoma", 10);
             //richTextScript.SelectionColor = Color.Black;
-            //richTextScript.SelectedText = "This is a list of Mindcracker Network websites.\n";
+            //richTextScript.SelectedText = "TESTTEXT";
         }
 
         private void timerPlay_Tick(object sender, EventArgs e)
@@ -150,45 +149,50 @@ namespace FateGrandOrderPlus
             if (Keyboard.IsKeyDown(Key.RightAlt))
             {
                 progressBar1.Value = 0;
-                checkBoxCanRun.Checked = true;
                 timerPlay.Stop();
+                checkBoxCanRun.Checked = true;
             }
             else
             {
                 if (richTextScript.Lines.Length > 0
                     && checkBoxCanRun.Checked)
                 {
+                    checkBoxCanRun.Checked = false;
                     String command = richTextScript.Lines[0];
                     if (command == "-----") // EXACT match for termination, otherwise this will loop
                     {
                         progressBar1.Value = progressBar1.Maximum;
                         timerPlay.Stop();
                     }
-                    else
+                    else if (command.Contains("-----"))
                     {
-                        if (progressBar1.Value == 0)
-                        {
-                            progressBar1.Maximum = richTextScript.Lines.Length;
-                            int pos = 0;
-                            foreach (String line in richTextScript.Lines)
-                            {
-                                pos++;
-                                if (line.Contains("-----")) break;
-                            }
-                            progressBar1.Value = progressBar1.Maximum - pos;
-                        }
-                        else if (progressBar1.Value < progressBar1.Maximum) progressBar1.Value += 1;
-
-                        String[] cparam = command.Split('#');
-                        CommandParser.ParseAndRunCommand(cparam, this.checkBoxCanRun, this.captureGraphics, this.captureBitmap);
-
-                        // Cycle command list
-                        List<String> l = new List<String>(richTextScript.Lines);
-                        String tmp = l[0];
-                        l.RemoveAt(0);
-                        l.Add(tmp);
-                        richTextScript.Lines = l.ToArray();
+                        progressBar1.Value = 0;
                     }
+                    if (progressBar1.Value == 0)
+                    {
+                        progressBar1.Maximum = richTextScript.Lines.Length;
+                        int pos = 0;
+                        foreach (String line in richTextScript.Lines)
+                        {
+                            if (pos != 0 && line.Contains("-----")) break;
+                            pos++;
+                        }
+                        progressBar1.Value = progressBar1.Maximum - pos;
+                    }
+                    else if (progressBar1.Value < progressBar1.Maximum)
+                    {
+                        progressBar1.Value += 1;
+                    }
+
+                    String[] cparam = command.Split('#');
+                    CommandParser.ParseAndRunCommand(cparam, this.checkBoxCanRun, this.captureGraphics, this.captureBitmap);
+
+                    // Cycle command list
+                    List<String> l = new List<String>(richTextScript.Lines);
+                    String tmp = l[0];
+                    l.RemoveAt(0);
+                    l.Add(tmp);
+                    richTextScript.Lines = l.ToArray();
                 }
             }
         }
@@ -258,10 +262,11 @@ namespace FateGrandOrderPlus
                 command += "#" + numericUDstabilize.Value.ToString();
                 command += "#" + numericUDPostWait.Value.ToString();
                 command += "#" + numericUDPostStabilize.Value.ToString();
-                command = AppendFinds(this.findText, this.findPicture, numericUDFind.Value + 1, command);
-                command = AppendFinds(this.avoidText, this.avoidPicture, numericUDAvoid.Value + 1, command);
-                command = AppendFinds(this.postFindText, this.postFindPicture, numericUDFindPost.Value + 1, command);
-                command = AppendFinds(this.postAvoidText, this.postAvoidPicture, this.numericUDAvoidPost.Value + 1, command);
+                command = AppendFinds(this.findText, this.findPicture, numericUDFind.Value, command);
+                command = AppendFinds(this.avoidText, this.avoidPicture, numericUDAvoid.Value, command);
+                command = AppendFinds(this.postFindText, this.postFindPicture, numericUDFindPost.Value, command);
+                command = AppendFinds(this.postAvoidText, this.postAvoidPicture, this.numericUDAvoidPost.Value, command);
+                richTextScript.Text += "\n" + command;
                 ClearCreate();
             } //PUBLISH
 
@@ -307,12 +312,12 @@ namespace FateGrandOrderPlus
 
         private string AppendFinds(TextBox[] findText, PictureBox[] findPicture, decimal v, string command)
         {
-            for (int i = 0; i < v+ 1; i++)
+            for (int i = 0; i < (v + 1); i++)
             {
-                command += findText[i];
+                command += findText[i].Text;
                 string name = findText[i].Text.Split('#')[1];
                 String fileName = string.Format(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                    @"\" + name + ".png");
+                    @"\" + name);
                 findPicture[i].Image.Save(fileName);
             }
             return command;
@@ -324,7 +329,7 @@ namespace FateGrandOrderPlus
             numericUDAvoidPost.Value = -1;
             numericUDFind.Value = -1;
             numericUDFindPost.Value = -1;
-            numericUDItem.Value = -1;
+            numericUDItem.Value = 0;
             pictureAvoid1.Image = null;
             pictureAvoid2.Image = null;
             pictureAvoid3.Image = null;
@@ -367,7 +372,7 @@ namespace FateGrandOrderPlus
             pictureBox.Image = ScanParameters.Copy(this.captureBitmap, tmpCapture);
             string name = textScenario.Text + "_" + textItem.Text + "_" + numericUDItem.Value.ToString();
             textBox.Text = "#" + name + ".png#"
-                + (x - 1).ToString() + "#" + (y - 1).ToString() + "#"
+                + (x).ToString() + "#" + (y).ToString() + "#"
                 + (x + width + 1) + "#" + (y + height + 1).ToString();
             numericUDItem.Value += 1;
             return;
