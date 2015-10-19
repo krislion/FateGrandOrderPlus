@@ -262,7 +262,7 @@ namespace FateGrandOrderPlus
             String postfix = DateTime.Now.ToString("_yyyy_MM_dd_H_mm_ss");
             name = name + postfix;
             String fileName = string.Format(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                @"\SCRN__" + name + ".png");
+                @"\SCRN\SCRN__" + name + ".png");
             Rectangle captureRectangle = Screen.AllScreens[0].Bounds;
             captureGraphics.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
             if (cparam.Length > 2)

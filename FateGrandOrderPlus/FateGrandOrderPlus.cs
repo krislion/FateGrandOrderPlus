@@ -59,11 +59,55 @@ namespace FateGrandOrderPlus
         private Graphics captureGraphics;
         private Rectangle captureRectangle;
         private Bitmap captureBitmap;
+        private TextBox[] findText;
+        private TextBox[] avoidText;
+        private TextBox[] postFindText;
+        private TextBox[] postAvoidText;
+        private PictureBox[] findPicture;
+        private PictureBox[] avoidPicture;
+        private PictureBox[] postFindPicture;
+        private PictureBox[] postAvoidPicture;
+
+
         private void FateGrandOrderPlus_Load(object sender, EventArgs e)
         {
             this.captureBitmap = new Bitmap(1366, 768);
             this.captureRectangle = Screen.AllScreens[0].Bounds;
             this.captureGraphics = Graphics.FromImage(captureBitmap);
+            this.findText = new TextBox[3];
+            findText[0] = textFind1;
+            findText[1] = textFind2;
+            findText[2] = textFind3;
+            this.avoidText = new TextBox[3];
+            avoidText[0] = textAvoid1;
+            avoidText[1] = textAvoid2;
+            avoidText[2] = textAvoid3;
+            this.postFindText = new TextBox[3];
+            postFindText[0] = textPostFind1;
+            postFindText[1] = textPostFind2;
+            postFindText[2] = textPostFind3;
+            this.postAvoidText = new TextBox[3];
+            postAvoidText[0] = textPostAvoid1;
+            postAvoidText[1] = textPostAvoid2;
+            postAvoidText[2] = textPostAvoid3;
+
+            this.findPicture = new PictureBox[3];
+            findPicture[0] = pictureFind1;
+            findPicture[1] = pictureFind2;
+            findPicture[2] = pictureFind3;
+            this.avoidPicture = new PictureBox[3];
+            avoidPicture[0] = pictureAvoid1;
+            avoidPicture[1] = pictureAvoid2;
+            avoidPicture[2] = pictureAvoid3;
+            this.postFindPicture = new PictureBox[3];
+            postFindPicture[0] = pictureFindPost1;
+            postFindPicture[1] = pictureFindPost2;
+            postFindPicture[2] = pictureFindPost3;
+            this.postAvoidPicture = new PictureBox[3];
+            postAvoidPicture[0] = pictureAvoidPost1;
+            postAvoidPicture[1] = pictureAvoidPost2;
+            postAvoidPicture[2] = pictureAvoidPost3;
+            
         }
 
         public FateGrandOrderPlus()
@@ -166,12 +210,6 @@ namespace FateGrandOrderPlus
             // check a lot of state. grab state of the world and begin to process
             // creation steps are synchronous, since you never intend to do more than one of these at a time
 
-            // Holding down left-ctrl will set the Click position
-            // Holding down left-alt will grab the screen down-right from the mouse for Find[cchFind]
-            // Holding down left-shift will increment cchFind
-            // Holding down right-alt will grab the screen down-right from the mouse for Avoid[cchAvoid]
-            // Holding down right-shift will increment cchAvoid
-
             // Holding down left-ctrl + left-alt will not set Click, will grab screen for find_post
             // Holding down left-ctrl + left-shift will increment cchFindPost
             // Holding down right-ctrl + right-alt will grab screen for avoid_post
@@ -182,34 +220,157 @@ namespace FateGrandOrderPlus
             if (Keyboard.IsKeyDown(Key.LeftCtrl)
                 && Keyboard.IsKeyDown(Key.LeftShift))
             {
-                if (numericUDFindPost.Value < numericUDFindPost.Maximum)
-                {
-                    numericUDFindPost.Value += 1;
-                }
+                IncrementUD(numericUDFindPost);
             }
             else if (Keyboard.IsKeyDown(Key.LeftCtrl)
                 && Keyboard.IsKeyDown(Key.LeftAlt))
             {
+                if (numericUDFindPost.Value == -1) numericUDFindPost.Value = 0;
+                Grab(postFindPicture[(int)numericUDFindPost.Value]
+                    , postFindText[(int)numericUDFindPost.Value]);
+                
             }
             else if (Keyboard.IsKeyDown(Key.RightCtrl)
                 && Keyboard.IsKeyDown(Key.RightShift))
             {
-                if (numericUDAvoidPost.Value < numericUDAvoidPost.Maximum)
-                {
-                    numericUDAvoidPost.Value += 1;
-                }
+                IncrementUD(numericUDAvoidPost);
             }
             else if (Keyboard.IsKeyDown(Key.RightCtrl)
                 && Keyboard.IsKeyDown(Key.RightAlt))
-            { }
+            {
+                if (numericUDAvoidPost.Value == -1) numericUDAvoidPost.Value = 0;
+                Grab(postAvoidPicture[(int)numericUDAvoidPost.Value]
+                    , postAvoidText[(int)numericUDAvoidPost.Value]);
+            }
             else if (Keyboard.IsKeyDown(Key.Space))
             {
-                numericUDAvoid.Value = 0;
-                numericUDAvoidPost.Value = 0;
-                numericUDFind.Value = 0;
-                numericUDFindPost.Value = 0;
+                //CLICKSCAN#X#Y#NUM_FIND#NUM_AVOID#NUM_FIND_POST#NUM_AVOID_POST
+                // #MS_WAIT_FIND#MS_FIND_STABILIZE#MS_WAIT_POST#MS_POST_STABILIZE
+                // #NAME1_FIND#X1#Y1#X2#Y2
+                string command = "SMARTCLICK";
+                command += "#" + textX.Text;
+                command += "#" + textY.Text;
+                command += "#" + (numericUDFind.Value + 1).ToString(); //number of each of these
+                command += "#" + (numericUDAvoid.Value + 1).ToString();
+                command += "#" + (numericUDFindPost.Value + 1).ToString();
+                command += "#" + (numericUDAvoidPost.Value + 1).ToString();
+                command += "#" + numericUDWait.Value.ToString(); // wait values
+                command += "#" + numericUDstabilize.Value.ToString();
+                command += "#" + numericUDPostWait.Value.ToString();
+                command += "#" + numericUDPostStabilize.Value.ToString();
+                command = AppendFinds(this.findText, this.findPicture, numericUDFind.Value + 1, command);
+                command = AppendFinds(this.avoidText, this.avoidPicture, numericUDAvoid.Value + 1, command);
+                command = AppendFinds(this.postFindText, this.postFindPicture, numericUDFindPost.Value + 1, command);
+                command = AppendFinds(this.postAvoidText, this.postAvoidPicture, this.numericUDAvoidPost.Value + 1, command);
+                ClearCreate();
             } //PUBLISH
-            
+
+            // Holding down left-alt will grab the screen down-right from the mouse for Find[cchFind]
+            // Holding down left-shift will increment cchFind
+            // Holding down right-alt will grab the screen down-right from the mouse for Avoid[cchAvoid]
+            // Holding down right-shift will increment cchAvoid
+            else if (Keyboard.IsKeyDown(Key.LeftAlt))
+            {
+                if (numericUDFind.Value == -1) numericUDFind.Value = 0;
+                Grab(findPicture[(int)numericUDFind.Value]
+                    , findText[(int)numericUDFind.Value]);
+            }
+            else if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                IncrementUD(numericUDFind);
+            }
+            else if (Keyboard.IsKeyDown(Key.RightAlt))
+            {
+                if (numericUDAvoid.Value == -1) numericUDAvoid.Value = 0;
+                Grab(avoidPicture[(int)numericUDAvoid.Value]
+                    , avoidText[(int)numericUDAvoid.Value]);
+            }
+            else if (Keyboard.IsKeyDown(Key.RightShift))
+            {
+                IncrementUD(numericUDAvoid);
+            }
+            // Holding down left-ctrl will set the Click position
+            else if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                textX.Text = System.Windows.Forms.Cursor.Position.X.ToString();
+                textY.Text = System.Windows.Forms.Cursor.Position.Y.ToString();
+            }
+        }
+
+        private void IncrementUD(NumericUpDown numericUDAvoidPost)
+        {
+            if (numericUDAvoidPost.Value < numericUDAvoidPost.Maximum)
+            {
+                numericUDAvoidPost.Value += 1;
+            }
+        }
+
+        private string AppendFinds(TextBox[] findText, PictureBox[] findPicture, decimal v, string command)
+        {
+            for (int i = 0; i < v+ 1; i++)
+            {
+                command += findText[i];
+                string name = findText[i].Text.Split('#')[1];
+                String fileName = string.Format(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                    @"\" + name + ".png");
+                findPicture[i].Image.Save(fileName);
+            }
+            return command;
+        }
+
+        private void ClearCreate()
+        {
+            numericUDAvoid.Value = -1;
+            numericUDAvoidPost.Value = -1;
+            numericUDFind.Value = -1;
+            numericUDFindPost.Value = -1;
+            numericUDItem.Value = -1;
+            pictureAvoid1.Image = null;
+            pictureAvoid2.Image = null;
+            pictureAvoid3.Image = null;
+            pictureAvoidPost1.Image = null;
+            pictureAvoidPost2.Image = null;
+            pictureAvoidPost3.Image = null;
+            pictureFind1.Image = null;
+            pictureFind2.Image = null;
+            pictureFind3.Image = null;
+            pictureFindPost1.Image = null;
+            pictureFindPost2.Image = null;
+            pictureFindPost3.Image = null;
+            textAvoid1.Text = "";
+            textAvoid2.Text = "";
+            textAvoid3.Text = "";
+            textPostAvoid1.Text = "";
+            textPostAvoid2.Text = "";
+            textPostAvoid3.Text = "";
+            textFind1.Text = "";
+            textFind2.Text = "";
+            textFind3.Text = "";
+            textPostFind1.Text = "";
+            textPostFind2.Text = "";
+            textPostFind3.Text = "";
+        }
+
+        private void Grab(PictureBox pictureBox, TextBox textBox)
+        {
+            int x = System.Windows.Forms.Cursor.Position.X;
+            int y = System.Windows.Forms.Cursor.Position.Y;
+            //textX.Text = x.ToString();
+            //textY.Text = y.ToString();
+            int width = (int)numericUDWidth.Value;
+            int height = (int)numericUDHeight.Value;
+            Rectangle tmpCapture = new Rectangle(x, y, width, height);
+            this.captureGraphics.CopyFromScreen(
+                this.captureRectangle.Left
+                , captureRectangle.Top, 0, 0
+                , captureRectangle.Size);
+            pictureBox.Image = ScanParameters.Copy(this.captureBitmap, tmpCapture);
+            string name = textScenario.Text + "_" + textItem.Text + "_" + numericUDItem.Value.ToString();
+            textBox.Text = "#" + name + ".png#"
+                + (x - 1).ToString() + "#" + (y - 1).ToString() + "#"
+                + (x + width + 1) + "#" + (y + height + 1).ToString();
+            numericUDItem.Value += 1;
+            return;
         }
     }
 }

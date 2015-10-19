@@ -45,7 +45,7 @@
             this.numericUDFind = new System.Windows.Forms.NumericUpDown();
             this.numericUDAvoid = new System.Windows.Forms.NumericUpDown();
             this.textItem = new System.Windows.Forms.TextBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numericUDItem = new System.Windows.Forms.NumericUpDown();
             this.textX = new System.Windows.Forms.TextBox();
             this.textY = new System.Windows.Forms.TextBox();
             this.labelSpacebar = new System.Windows.Forms.Label();
@@ -69,6 +69,22 @@
             this.labelEndPlay = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.checkBoxCanRun = new System.Windows.Forms.CheckBox();
+            this.textFind1 = new System.Windows.Forms.TextBox();
+            this.textFind2 = new System.Windows.Forms.TextBox();
+            this.textFind3 = new System.Windows.Forms.TextBox();
+            this.textAvoid1 = new System.Windows.Forms.TextBox();
+            this.textAvoid2 = new System.Windows.Forms.TextBox();
+            this.textAvoid3 = new System.Windows.Forms.TextBox();
+            this.textPostFind1 = new System.Windows.Forms.TextBox();
+            this.textPostFind2 = new System.Windows.Forms.TextBox();
+            this.textPostFind3 = new System.Windows.Forms.TextBox();
+            this.textPostAvoid2 = new System.Windows.Forms.TextBox();
+            this.textPostAvoid1 = new System.Windows.Forms.TextBox();
+            this.textPostAvoid3 = new System.Windows.Forms.TextBox();
+            this.numericUDWait = new System.Windows.Forms.NumericUpDown();
+            this.numericUDstabilize = new System.Windows.Forms.NumericUpDown();
+            this.numericUDPostWait = new System.Windows.Forms.NumericUpDown();
+            this.numericUDPostStabilize = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind3)).BeginInit();
@@ -77,7 +93,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoid3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDFind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDAvoid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDItem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDFindPost)).BeginInit();
@@ -88,6 +104,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoidPost3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoidPost2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoidPost1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDWait)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDstabilize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDPostWait)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDPostStabilize)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -203,16 +223,46 @@
             // numericUDFind
             // 
             this.numericUDFind.Location = new System.Drawing.Point(349, 38);
+            this.numericUDFind.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUDFind.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.numericUDFind.Name = "numericUDFind";
             this.numericUDFind.Size = new System.Drawing.Size(42, 20);
             this.numericUDFind.TabIndex = 13;
+            this.numericUDFind.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             // 
             // numericUDAvoid
             // 
             this.numericUDAvoid.Location = new System.Drawing.Point(457, 38);
+            this.numericUDAvoid.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUDAvoid.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.numericUDAvoid.Name = "numericUDAvoid";
             this.numericUDAvoid.Size = new System.Drawing.Size(42, 20);
             this.numericUDAvoid.TabIndex = 14;
+            this.numericUDAvoid.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             // 
             // textItem
             // 
@@ -222,12 +272,12 @@
             this.textItem.TabIndex = 15;
             this.textItem.Text = "ITEM";
             // 
-            // numericUpDown1
+            // numericUDItem
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(745, 65);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(99, 20);
-            this.numericUpDown1.TabIndex = 16;
+            this.numericUDItem.Location = new System.Drawing.Point(745, 65);
+            this.numericUDItem.Name = "numericUDItem";
+            this.numericUDItem.Size = new System.Drawing.Size(99, 20);
+            this.numericUDItem.TabIndex = 16;
             // 
             // textX
             // 
@@ -288,16 +338,46 @@
             // numericUDFindPost
             // 
             this.numericUDFindPost.Location = new System.Drawing.Point(549, 38);
+            this.numericUDFindPost.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUDFindPost.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.numericUDFindPost.Name = "numericUDFindPost";
             this.numericUDFindPost.Size = new System.Drawing.Size(42, 20);
             this.numericUDFindPost.TabIndex = 23;
+            this.numericUDFindPost.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             // 
             // numericUDAvoidPost
             // 
             this.numericUDAvoidPost.Location = new System.Drawing.Point(620, 38);
+            this.numericUDAvoidPost.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUDAvoidPost.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             this.numericUDAvoidPost.Name = "numericUDAvoidPost";
             this.numericUDAvoidPost.Size = new System.Drawing.Size(42, 20);
             this.numericUDAvoidPost.TabIndex = 24;
+            this.numericUDAvoidPost.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
             // 
             // labelRightCtrl
             // 
@@ -397,7 +477,7 @@
             // labelEndPlay
             // 
             this.labelEndPlay.AutoSize = true;
-            this.labelEndPlay.Location = new System.Drawing.Point(718, 247);
+            this.labelEndPlay.Location = new System.Drawing.Point(438, 247);
             this.labelEndPlay.Name = "labelEndPlay";
             this.labelEndPlay.Size = new System.Drawing.Size(127, 13);
             this.labelEndPlay.TabIndex = 36;
@@ -420,11 +500,199 @@
             this.checkBoxCanRun.Text = "Can run next item?";
             this.checkBoxCanRun.UseVisualStyleBackColor = true;
             // 
+            // textFind1
+            // 
+            this.textFind1.Location = new System.Drawing.Point(293, 120);
+            this.textFind1.Name = "textFind1";
+            this.textFind1.Size = new System.Drawing.Size(100, 20);
+            this.textFind1.TabIndex = 39;
+            // 
+            // textFind2
+            // 
+            this.textFind2.Location = new System.Drawing.Point(293, 168);
+            this.textFind2.Name = "textFind2";
+            this.textFind2.Size = new System.Drawing.Size(100, 20);
+            this.textFind2.TabIndex = 40;
+            // 
+            // textFind3
+            // 
+            this.textFind3.Location = new System.Drawing.Point(294, 215);
+            this.textFind3.Name = "textFind3";
+            this.textFind3.Size = new System.Drawing.Size(100, 20);
+            this.textFind3.TabIndex = 41;
+            // 
+            // textAvoid1
+            // 
+            this.textAvoid1.Location = new System.Drawing.Point(400, 120);
+            this.textAvoid1.Name = "textAvoid1";
+            this.textAvoid1.Size = new System.Drawing.Size(100, 20);
+            this.textAvoid1.TabIndex = 42;
+            // 
+            // textAvoid2
+            // 
+            this.textAvoid2.Location = new System.Drawing.Point(400, 168);
+            this.textAvoid2.Name = "textAvoid2";
+            this.textAvoid2.Size = new System.Drawing.Size(100, 20);
+            this.textAvoid2.TabIndex = 43;
+            // 
+            // textAvoid3
+            // 
+            this.textAvoid3.Location = new System.Drawing.Point(400, 215);
+            this.textAvoid3.Name = "textAvoid3";
+            this.textAvoid3.Size = new System.Drawing.Size(100, 20);
+            this.textAvoid3.TabIndex = 44;
+            // 
+            // textPostFind1
+            // 
+            this.textPostFind1.Location = new System.Drawing.Point(506, 120);
+            this.textPostFind1.Name = "textPostFind1";
+            this.textPostFind1.Size = new System.Drawing.Size(100, 20);
+            this.textPostFind1.TabIndex = 45;
+            // 
+            // textPostFind2
+            // 
+            this.textPostFind2.Location = new System.Drawing.Point(506, 168);
+            this.textPostFind2.Name = "textPostFind2";
+            this.textPostFind2.Size = new System.Drawing.Size(100, 20);
+            this.textPostFind2.TabIndex = 46;
+            // 
+            // textPostFind3
+            // 
+            this.textPostFind3.Location = new System.Drawing.Point(506, 215);
+            this.textPostFind3.Name = "textPostFind3";
+            this.textPostFind3.Size = new System.Drawing.Size(100, 20);
+            this.textPostFind3.TabIndex = 47;
+            // 
+            // textPostAvoid2
+            // 
+            this.textPostAvoid2.Location = new System.Drawing.Point(612, 168);
+            this.textPostAvoid2.Name = "textPostAvoid2";
+            this.textPostAvoid2.Size = new System.Drawing.Size(100, 20);
+            this.textPostAvoid2.TabIndex = 48;
+            // 
+            // textPostAvoid1
+            // 
+            this.textPostAvoid1.Location = new System.Drawing.Point(612, 121);
+            this.textPostAvoid1.Name = "textPostAvoid1";
+            this.textPostAvoid1.Size = new System.Drawing.Size(100, 20);
+            this.textPostAvoid1.TabIndex = 48;
+            // 
+            // textPostAvoid3
+            // 
+            this.textPostAvoid3.Location = new System.Drawing.Point(612, 215);
+            this.textPostAvoid3.Name = "textPostAvoid3";
+            this.textPostAvoid3.Size = new System.Drawing.Size(100, 20);
+            this.textPostAvoid3.TabIndex = 49;
+            // 
+            // numericUDWait
+            // 
+            this.numericUDWait.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUDWait.Location = new System.Drawing.Point(730, 157);
+            this.numericUDWait.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.numericUDWait.Name = "numericUDWait";
+            this.numericUDWait.Size = new System.Drawing.Size(114, 20);
+            this.numericUDWait.TabIndex = 50;
+            this.numericUDWait.Value = new decimal(new int[] {
+            25000,
+            0,
+            0,
+            0});
+            // 
+            // numericUDstabilize
+            // 
+            this.numericUDstabilize.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUDstabilize.Location = new System.Drawing.Point(730, 183);
+            this.numericUDstabilize.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUDstabilize.Name = "numericUDstabilize";
+            this.numericUDstabilize.Size = new System.Drawing.Size(114, 20);
+            this.numericUDstabilize.TabIndex = 51;
+            this.numericUDstabilize.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // numericUDPostWait
+            // 
+            this.numericUDPostWait.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUDPostWait.Location = new System.Drawing.Point(730, 209);
+            this.numericUDPostWait.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.numericUDPostWait.Name = "numericUDPostWait";
+            this.numericUDPostWait.Size = new System.Drawing.Size(114, 20);
+            this.numericUDPostWait.TabIndex = 52;
+            this.numericUDPostWait.Value = new decimal(new int[] {
+            25000,
+            0,
+            0,
+            0});
+            // 
+            // numericUDPostStabilize
+            // 
+            this.numericUDPostStabilize.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUDPostStabilize.Location = new System.Drawing.Point(730, 235);
+            this.numericUDPostStabilize.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUDPostStabilize.Name = "numericUDPostStabilize";
+            this.numericUDPostStabilize.Size = new System.Drawing.Size(114, 20);
+            this.numericUDPostStabilize.TabIndex = 53;
+            this.numericUDPostStabilize.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
             // FateGrandOrderPlus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(852, 274);
+            this.Controls.Add(this.numericUDPostStabilize);
+            this.Controls.Add(this.numericUDPostWait);
+            this.Controls.Add(this.numericUDstabilize);
+            this.Controls.Add(this.numericUDWait);
+            this.Controls.Add(this.textPostAvoid3);
+            this.Controls.Add(this.textPostAvoid1);
+            this.Controls.Add(this.textPostAvoid2);
+            this.Controls.Add(this.textPostFind3);
+            this.Controls.Add(this.textPostFind2);
+            this.Controls.Add(this.textPostFind1);
+            this.Controls.Add(this.textAvoid3);
+            this.Controls.Add(this.textAvoid2);
+            this.Controls.Add(this.textAvoid1);
+            this.Controls.Add(this.textFind3);
+            this.Controls.Add(this.textFind2);
+            this.Controls.Add(this.textFind1);
             this.Controls.Add(this.checkBoxCanRun);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.labelEndPlay);
@@ -446,7 +714,7 @@
             this.Controls.Add(this.labelSpacebar);
             this.Controls.Add(this.textY);
             this.Controls.Add(this.textX);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.numericUDItem);
             this.Controls.Add(this.textItem);
             this.Controls.Add(this.numericUDAvoid);
             this.Controls.Add(this.numericUDFind);
@@ -474,7 +742,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoid3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDFind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDAvoid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDItem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDHeight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUDFindPost)).EndInit();
@@ -485,6 +753,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoidPost3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoidPost2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureAvoidPost1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDWait)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDstabilize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDPostWait)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUDPostStabilize)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -508,7 +780,7 @@
         private System.Windows.Forms.NumericUpDown numericUDFind;
         private System.Windows.Forms.NumericUpDown numericUDAvoid;
         private System.Windows.Forms.TextBox textItem;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numericUDItem;
         private System.Windows.Forms.TextBox textX;
         private System.Windows.Forms.TextBox textY;
         private System.Windows.Forms.Label labelSpacebar;
@@ -532,6 +804,22 @@
         private System.Windows.Forms.Label labelEndPlay;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.CheckBox checkBoxCanRun;
+        private System.Windows.Forms.TextBox textFind1;
+        private System.Windows.Forms.TextBox textFind2;
+        private System.Windows.Forms.TextBox textFind3;
+        private System.Windows.Forms.TextBox textAvoid1;
+        private System.Windows.Forms.TextBox textAvoid2;
+        private System.Windows.Forms.TextBox textAvoid3;
+        private System.Windows.Forms.TextBox textPostFind1;
+        private System.Windows.Forms.TextBox textPostFind2;
+        private System.Windows.Forms.TextBox textPostFind3;
+        private System.Windows.Forms.TextBox textPostAvoid2;
+        private System.Windows.Forms.TextBox textPostAvoid1;
+        private System.Windows.Forms.TextBox textPostAvoid3;
+        private System.Windows.Forms.NumericUpDown numericUDWait;
+        private System.Windows.Forms.NumericUpDown numericUDstabilize;
+        private System.Windows.Forms.NumericUpDown numericUDPostWait;
+        private System.Windows.Forms.NumericUpDown numericUDPostStabilize;
     }
 }
 
