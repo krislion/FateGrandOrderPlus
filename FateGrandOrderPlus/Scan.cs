@@ -98,7 +98,7 @@ namespace FateGrandOrderPlus
         }
         private static bool Find(ScanParameters s)
         {
-            return SearchBitmap(s.Needle, s.Haystack, 0.0).Height != 0;
+            return SearchBitmap(s.Needle, s.Haystack, 0.03).Height != 0;
         }
         private static bool Avoid(ScanParameters s)
         {
@@ -116,7 +116,7 @@ namespace FateGrandOrderPlus
         // If the Needle and Haystack involved are gigantic, then the worst-case search is fairly slow (can be several ms)
         public static Rectangle SearchBitmap(Bitmap smallBmp, Bitmap bigBmp, double tolerance)
         {
-            IReadOnlyList<int> ignoreColor = new int[] { 255, 0, 220 };
+            IReadOnlyList<int> ignoreColor = new int[] { 220, 0, 255 };
             BitmapData smallData =
               smallBmp.LockBits(new Rectangle(0, 0, smallBmp.Width, smallBmp.Height),
                        System.Drawing.Imaging.ImageLockMode.ReadOnly,

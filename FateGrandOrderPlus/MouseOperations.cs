@@ -94,9 +94,11 @@ namespace FateGrandOrderPlus
 
         public static async Task MyClickOnce(int x, int y)
         {
-            await SwoopToPosition(x, y);
+            await
+                SwoopToPosition(x, y);
             MouseEvent(MouseEventFlags.LeftDown);
-            await Task.Delay(40);
+            await
+                Task.Delay(40);
             MouseEvent(MouseEventFlags.LeftUp);
             await Task.Delay(20);
         }
