@@ -85,6 +85,12 @@
             this.numericUDstabilize = new System.Windows.Forms.NumericUpDown();
             this.numericUDPostWait = new System.Windows.Forms.NumericUpDown();
             this.numericUDPostStabilize = new System.Windows.Forms.NumericUpDown();
+            this.buttonGrabAndroid = new System.Windows.Forms.Button();
+            this.buttonGrabAndroid2 = new System.Windows.Forms.Button();
+            this.buttonGrabAndroid3 = new System.Windows.Forms.Button();
+            this.androidNoStart = new System.Windows.Forms.Button();
+            this.androidNoStart2 = new System.Windows.Forms.Button();
+            this.androidNoStart3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureFind3)).BeginInit();
@@ -132,7 +138,7 @@
             // 
             this.richTextScript.Location = new System.Drawing.Point(0, 12);
             this.richTextScript.Name = "richTextScript";
-            this.richTextScript.Size = new System.Drawing.Size(273, 248);
+            this.richTextScript.Size = new System.Drawing.Size(159, 248);
             this.richTextScript.TabIndex = 2;
             this.richTextScript.Text = "";
             // 
@@ -672,11 +678,77 @@
             0,
             0});
             // 
+            // buttonGrabAndroid
+            // 
+            this.buttonGrabAndroid.Location = new System.Drawing.Point(166, 12);
+            this.buttonGrabAndroid.Name = "buttonGrabAndroid";
+            this.buttonGrabAndroid.Size = new System.Drawing.Size(75, 23);
+            this.buttonGrabAndroid.TabIndex = 54;
+            this.buttonGrabAndroid.Text = "ANDROID GRAB";
+            this.buttonGrabAndroid.UseVisualStyleBackColor = true;
+            this.buttonGrabAndroid.Click += new System.EventHandler(this.buttonGrabAndroid_Click);
+            // 
+            // buttonGrabAndroid2
+            // 
+            this.buttonGrabAndroid2.Location = new System.Drawing.Point(166, 41);
+            this.buttonGrabAndroid2.Name = "buttonGrabAndroid2";
+            this.buttonGrabAndroid2.Size = new System.Drawing.Size(75, 23);
+            this.buttonGrabAndroid2.TabIndex = 56;
+            this.buttonGrabAndroid2.Text = "ANDROID2";
+            this.buttonGrabAndroid2.UseVisualStyleBackColor = true;
+            this.buttonGrabAndroid2.Click += new System.EventHandler(this.buttonGrabAndroid2_Click);
+            // 
+            // buttonGrabAndroid3
+            // 
+            this.buttonGrabAndroid3.Location = new System.Drawing.Point(166, 70);
+            this.buttonGrabAndroid3.Name = "buttonGrabAndroid3";
+            this.buttonGrabAndroid3.Size = new System.Drawing.Size(75, 23);
+            this.buttonGrabAndroid3.TabIndex = 57;
+            this.buttonGrabAndroid3.Text = "ANDROID3";
+            this.buttonGrabAndroid3.UseVisualStyleBackColor = true;
+            this.buttonGrabAndroid3.Click += new System.EventHandler(this.buttonGrabAndroid3_Click);
+            // 
+            // androidNoStart
+            // 
+            this.androidNoStart.Location = new System.Drawing.Point(166, 121);
+            this.androidNoStart.Name = "androidNoStart";
+            this.androidNoStart.Size = new System.Drawing.Size(121, 23);
+            this.androidNoStart.TabIndex = 58;
+            this.androidNoStart.Text = "ANDROID NOST";
+            this.androidNoStart.UseVisualStyleBackColor = true;
+            this.androidNoStart.Click += new System.EventHandler(this.androidNoStart_Click);
+            // 
+            // androidNoStart2
+            // 
+            this.androidNoStart2.Location = new System.Drawing.Point(165, 150);
+            this.androidNoStart2.Name = "androidNoStart2";
+            this.androidNoStart2.Size = new System.Drawing.Size(121, 23);
+            this.androidNoStart2.TabIndex = 59;
+            this.androidNoStart2.Text = "ANDROID NOST2";
+            this.androidNoStart2.UseVisualStyleBackColor = true;
+            this.androidNoStart2.Click += new System.EventHandler(this.androidNoStart2_Click);
+            // 
+            // androidNoStart3
+            // 
+            this.androidNoStart3.Location = new System.Drawing.Point(165, 179);
+            this.androidNoStart3.Name = "androidNoStart3";
+            this.androidNoStart3.Size = new System.Drawing.Size(121, 23);
+            this.androidNoStart3.TabIndex = 60;
+            this.androidNoStart3.Text = "ANDROID NOST3";
+            this.androidNoStart3.UseVisualStyleBackColor = true;
+            this.androidNoStart3.Click += new System.EventHandler(this.androidNoStart3_Click);
+            // 
             // FateGrandOrderPlus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(852, 274);
+            this.Controls.Add(this.androidNoStart3);
+            this.Controls.Add(this.androidNoStart2);
+            this.Controls.Add(this.androidNoStart);
+            this.Controls.Add(this.buttonGrabAndroid3);
+            this.Controls.Add(this.buttonGrabAndroid2);
+            this.Controls.Add(this.buttonGrabAndroid);
             this.Controls.Add(this.numericUDPostStabilize);
             this.Controls.Add(this.numericUDPostWait);
             this.Controls.Add(this.numericUDstabilize);
@@ -820,6 +892,12 @@
         private System.Windows.Forms.NumericUpDown numericUDstabilize;
         private System.Windows.Forms.NumericUpDown numericUDPostWait;
         private System.Windows.Forms.NumericUpDown numericUDPostStabilize;
+        private System.Windows.Forms.Button buttonGrabAndroid;
+        private System.Windows.Forms.Button buttonGrabAndroid2;
+        private System.Windows.Forms.Button buttonGrabAndroid3;
+        private System.Windows.Forms.Button androidNoStart;
+        private System.Windows.Forms.Button androidNoStart2;
+        private System.Windows.Forms.Button androidNoStart3;
     }
 }
 

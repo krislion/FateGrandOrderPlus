@@ -21,6 +21,7 @@ namespace FateGrandOrderPlus
             {
                 case "IMPATIENTLYCLICK": await ClickImpatientlyUntil(cparam, checkBoxCanRun, g, b); return;
                 case "FIGHTUNTILDONE": await FightUntilDone(checkBoxCanRun, g, b); return;
+                case "FIGHTWELL": await FightWell(checkBoxCanRun, g, b); return;
                 case "WAIT": await ClearCanRun(int.Parse(cparam[1]), checkBoxCanRun); return;
                 case "TYPE": await TypeItIn(cparam[1], checkBoxCanRun); return;
                 //case "BATTLE": await FullBattle(checkBoxCanRun); return;
@@ -160,7 +161,84 @@ namespace FateGrandOrderPlus
             }
         }
 
-        private static Bitmap GetBmp(string name)
+
+        private static async Task FightWell(CheckBox checkBoxCanRun, Graphics g, Bitmap b)
+        {
+            string[] attack = "SMARTCLICK#425#256#1#0#0#1#40000#600#1500#600#ATTACK_ITEM_0.png#418#229#429#240#ATTACK_ITEM_0.png#418#229#429#240".Split('#');
+            string[] c1 = "SMARTCLICK#45#214#0#0#1#0#2000#600#1500#1000#ATTACK1_POSTFIND_0.png#40#204#46#230".Split('#');
+            string[] c2 = "SMARTCLICK#139#203#0#0#1#0#25000#600#1500#1000#ATTACK_POSTFIND_0.png#139#203#145#214".Split('#');
+            string[] c3 = "SMARTCLICK#242#226#1#0#0#1#2000#600#1500#2000#ATTACK_POSTFIND_0.png#139#203#145#214#ATTACK_POSTFIND_0.png#139#203#145#214".Split('#');
+            //string[] c3 = "SMARTCLICK#242#226#1#0#0#1#2000#600#1500#2000#ATTACK_POSTFIND_0.png#139#203#145#214#ATTACK_POSTFIND_0.png#139#203#145#214".Split('#');
+            //string[] c3 = "SMARTCLICK#242#226#1#0#0#1#2000#600#1500#2000#ATTACK_POSTFIND_0.png#139#203#145#214#ATTACK_POSTFIND_0.png#139#203#145#214".Split('#');
+            string[] dismiss = "SMARTCLICK#237#282#2#0#0#2#35000#600#2000#600#DISMISS_ITEM_0.png#228#265#239#271#DISMISS_ITEM_1.png#242#265#253#280#DISMISS_ITEM_0.png#228#265#239#271#DISMISS_ITEM_1.png#242#265#253#280".Split('#');
+
+            int iterations = 0;
+            bool done = false;
+            Rectangle captureRectangle = new Rectangle(0, 0, 500, 350);
+            Rectangle attackRectangle = new Rectangle(418, 229, 13, 12);
+            Rectangle dismissRectangle = new Rectangle(228, 265, 13, 8);
+            Rectangle dismiss2Rectangle = new Rectangle(242, 265, 12, 16);
+            while (iterations < 5000 && !done)
+            {
+                iterations++;
+                int findstartcch = 0;
+                Rectangle attack_result = new Rectangle(0, 0, 0, 0);
+                Rectangle dismiss_result = new Rectangle(0, 0, 0, 0);
+                Rectangle dismiss2_result = new Rectangle(0, 0, 0, 0);
+                while (findstartcch < 30000)
+                {
+                    findstartcch++;
+                    await Task.Delay(100);
+                    g.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+                    Bitmap attack_check = ScanParameters.Copy(b, attackRectangle);
+                    attack_result = Scan.SearchBitmap(GetBmp("ATTACK_ITEM_0.png"), attack_check, 0.05);
+                    if (attack_result.Height != 0)
+                    {
+                        break; // ATTACK!!!
+                    }
+                    Bitmap dismiss_check = ScanParameters.Copy(b, dismissRectangle);
+                    dismiss_result = Scan.SearchBitmap(GetBmp("DISMISS_ITEM_0.png"), dismiss_check, 0.05);
+                    Bitmap dismiss2_check = ScanParameters.Copy(b, dismiss2Rectangle);
+                    dismiss2_result = Scan.SearchBitmap(GetBmp("DISMISS_ITEM_1.png"), dismiss2_check, 0.04);
+                    if (dismiss_result.Height != 0 && dismiss2_result.Height != 0)
+                    {
+                        break; // DONE!
+                    }
+                }
+
+                if (attack_result.Height != 0)
+                {
+                    await SmartClick(attack, checkBoxCanRun, g, b, false);
+                    await SmartClick(c1, checkBoxCanRun, g, b, false);
+                    await SmartClick(c2, checkBoxCanRun, g, b, false);
+                    await SmartClick(c3, checkBoxCanRun, g, b, false);
+                }
+                else if (dismiss_result.Height != 0 && dismiss2_result.Height != 0)
+                {
+                    await Task.Delay(3000);
+                    g.CopyFromScreen(captureRectangle.Left, captureRectangle.Top, 0, 0, captureRectangle.Size);
+                    Bitmap dismiss_check = ScanParameters.Copy(b, dismissRectangle);
+                    dismiss_result = Scan.SearchBitmap(GetBmp("DISMISS_ITEM_0.png"), dismiss_check, 0.05);
+                    Bitmap dismiss2_check = ScanParameters.Copy(b, dismiss2Rectangle);
+                    dismiss2_result = Scan.SearchBitmap(GetBmp("DISMISS_ITEM_1.png"), dismiss2_check, 0.04);
+
+                    Bitmap attack_check = ScanParameters.Copy(b, attackRectangle);
+                    attack_result = Scan.SearchBitmap(GetBmp("ATTACK_ITEM_0.png"), attack_check, 0.05);
+                    if (attack_result.Height != 0)
+                    {
+                        continue; // ATTACK!!!
+                    }
+                    if (dismiss_result.Height != 0 && dismiss2_result.Height != 0)
+                    {
+                        await SmartClick(dismiss, checkBoxCanRun, g, b);
+                        return;
+                    }
+                }
+            }
+        }
+
+
+        public static Bitmap GetBmp(string name)
         {
             if (!bmpCache.ContainsKey(name))
             {
