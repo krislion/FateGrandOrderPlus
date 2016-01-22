@@ -15,371 +15,14 @@ namespace FateGrandOrderPlus
 {
     public partial class FateGrandOrderPlus : Form
     {
-        // Holding down left-ctrl will set the Click position
-        // Holding down left-alt will grab the screen down-right from the mouse for Find[cchFind]
-        // Holding down left-shift will increment cchFind
-        // Holding down right-alt will grab the screen down-right from the mouse for Avoid[cchAvoid]
-        // Holding down right-shift will increment cchAvoid
-        // Holding down left-ctrl + left-alt will not set Click, will grab screen for find_post
-        // Holding down left-ctrl + left-shift will increment cchFindPost
-        // Holding down right-ctrl + right-alt will grab screen for avoid_post
-        // Holding down right-ctrl + right-shift will increment cchAvoidPost
-        // Holding down spacebar will publish!
-        //  1. grab all screenshot areas from the form (if set, up to 3 to find and 3 to avoid)
-        //  2. write them out as "SCENARIO_ITEM_XXX_FIND_YYY" and "SCENARIO_ITEM_XXX_AVOID_YYY"
-        //  3. clear the screenshots from memory/clear that they were set
-        //  4. increment the XXX (item counter)
-        //  5. calculate the bounding rectangle from both needles, adding 2 on each dimension
-        //  6. print out the script necessary to generate the relevant ScanParams and Scan function call
-        //  7. reset all data to empty aside from the SCENARIO, ITEM, and XXX
-        //
-        // Example:
-        // Will save LOADGAME_TITLESCREEN_001_FIND_001.png (a picture of the game's title screen)
-        // And print out the following line:
-        //     CLICKSCAN#300#300#1#0#0#0#500#200#500#LOADGAME_TITLESCREEN_001_FIND_001.png#
-        // CLICKSCAN takes x,y coordinates to click, first, then the number of items to find and the number of items to avoid
-        // After these, there is a chance to share a filename (needle) to seek as well as the rectangular area of the screen to check
-        // CLICKSCAN also takes Find(post) and Avoid(post) images to know when it has clicked successfully.
-        // After each of these, 
-        // CLICKSCAN#NUM_FIND#NUM_AVOID#NUM_FIND_POST#NUM_AVOID_POST#MS_WAIT_FIND#MS_FIND_STABILIZE#MS_WAIT_POST#MS_POST_STABILIZE
-        // #NAME1_FIND#X1#Y1#X2#Y2
-        // #NAME2_FIND#X1#Y1#X2#Y2
-        // ..
-        // #NAME1_AVOID#X1#Y1#X2#Y2
-        // ...
-        // #NAME1_FINDPOST#X1#Y1#X2#Y2
-        // ...
-        // #NAME1_AVOIDPOST#X1#Y1#X2#Y2
-        // ONCE items are found, and seen for at least  MS_FIND_STABILIZE, then the click happens once.
-        // This waits up to MS_WAIT_POST for the post conditions to become true.
-        // If not true by then, then reset state and look at the action again anew. (failed to happen?)
-        // If true before then, then begin to wait for everything to stabilize and be true every time for MS_POST_STABILIZE ms.
-        // If it does not stabilize or does not ever find the conditions before MS_WAIT_FIND, then takes a screenshot and CLICKS AGAIN ANYWAY
-        // then tries to continue. Always dismisses dialogs, which are tracked in another thread.
-        // MIGHT restart the script, likely deleting progress/data.
-
         private Graphics captureGraphics;
         private Rectangle captureRectangle;
         private Bitmap captureBitmap;
-        private TextBox[] findText;
-        private TextBox[] avoidText;
-        private TextBox[] postFindText;
-        private TextBox[] postAvoidText;
-        private PictureBox[] findPicture;
-        private PictureBox[] avoidPicture;
-        private PictureBox[] postFindPicture;
-        private PictureBox[] postAvoidPicture;
-
-
-        private void FateGrandOrderPlus_Load(object sender, EventArgs e)
-        {
-            this.captureBitmap = new Bitmap(1366, 768);
-            this.captureRectangle = Screen.AllScreens[0].Bounds;
-            this.captureGraphics = Graphics.FromImage(captureBitmap);
-            this.findText = new TextBox[3];
-            findText[0] = textFind1;
-            findText[1] = textFind2;
-            findText[2] = textFind3;
-            this.avoidText = new TextBox[3];
-            avoidText[0] = textAvoid1;
-            avoidText[1] = textAvoid2;
-            avoidText[2] = textAvoid3;
-            this.postFindText = new TextBox[3];
-            postFindText[0] = textPostFind1;
-            postFindText[1] = textPostFind2;
-            postFindText[2] = textPostFind3;
-            this.postAvoidText = new TextBox[3];
-            postAvoidText[0] = textPostAvoid1;
-            postAvoidText[1] = textPostAvoid2;
-            postAvoidText[2] = textPostAvoid3;
-
-            this.findPicture = new PictureBox[3];
-            findPicture[0] = pictureFind1;
-            findPicture[1] = pictureFind2;
-            findPicture[2] = pictureFind3;
-            this.avoidPicture = new PictureBox[3];
-            avoidPicture[0] = pictureAvoid1;
-            avoidPicture[1] = pictureAvoid2;
-            avoidPicture[2] = pictureAvoid3;
-            this.postFindPicture = new PictureBox[3];
-            postFindPicture[0] = pictureFindPost1;
-            postFindPicture[1] = pictureFindPost2;
-            postFindPicture[2] = pictureFindPost3;
-            this.postAvoidPicture = new PictureBox[3];
-            postAvoidPicture[0] = pictureAvoidPost1;
-            postAvoidPicture[1] = pictureAvoidPost2;
-            postAvoidPicture[2] = pictureAvoidPost3;
-            
-        }
-
         public FateGrandOrderPlus()
         {
             InitializeComponent();
         }
-
-        private void buttonStart_Click(object sender, EventArgs e)
-        {
-            timerPlay.Start();
-            progressBar1.Value = 0;
-            // Note: does not immediately execute the next command if already running (ala next line)
-            //checkBoxCanRun.Checked = true;
-            //richTextScript.BackColor = Color.White;
-            //richTextScript.Clear();
-            //richTextScript.SelectedText = "BIG TEXT\n";
-            //richTextScript.SelectionFont = new Font("Verdana", 12);
-            //richTextScript.SelectionBullet = true;
-            //richTextScript.SelectionColor = Color.DarkBlue;
-            //richTextScript.SelectedText = "BLUE" + "\n";
-            //richTextScript.SelectionFont = new Font("Verdana", 12);
-            //richTextScript.SelectionColor = Color.Orange;
-            //richTextScript.SelectedText = "ORANGE" + "\n";
-            //richTextScript.SelectionFont = new Font("Verdana", 12);
-            //richTextScript.SelectionColor = Color.Green;
-            //richTextScript.SelectedText = ".BULLETED" + "\n";
-            //richTextScript.SelectionColor = Color.Red;
-            //richTextScript.SelectedText = "XYZZY" + "\n";
-            //richTextScript.SelectionBullet = false;
-            //richTextScript.SelectionFont = new Font("Tahoma", 10);
-            //richTextScript.SelectionColor = Color.Black;
-            //richTextScript.SelectedText = "TESTTEXT";
-        }
-
-        private void timerPlay_Tick(object sender, EventArgs e)
-        {
-            // everything called by the play timer will act asynchronously
-            // this keeps the ui from freezing during a long check/sleep/check/sleep/check/act cycle
-            if (Keyboard.IsKeyDown(Key.RightAlt))
-            {
-                progressBar1.Value = 0;
-                timerPlay.Stop();
-                checkBoxCanRun.Checked = true;
-            }
-            else
-            {
-                if (richTextScript.Lines.Length > 0
-                    && checkBoxCanRun.Checked)
-                {
-                    checkBoxCanRun.Checked = false;
-                    String command = richTextScript.Lines[0];
-                    if (command == "-----") // EXACT match for termination, otherwise this will loop
-                    {
-                        progressBar1.Value = progressBar1.Maximum;
-                        timerPlay.Stop();
-                    }
-                    else if (command.Contains("-----"))
-                    {
-                        progressBar1.Value = 0;
-                    }
-                    if (progressBar1.Value == 0)
-                    {
-                        progressBar1.Maximum = richTextScript.Lines.Length;
-                        int pos = 0;
-                        foreach (String line in richTextScript.Lines)
-                        {
-                            if (pos != 0 && line.Contains("-----")) break;
-                            pos++;
-                        }
-                        progressBar1.Value = progressBar1.Maximum - pos;
-                    }
-                    else if (progressBar1.Value < progressBar1.Maximum)
-                    {
-                        progressBar1.Value += 1;
-                    }
-
-                    String[] cparam = command.Split('#');
-                    CommandParser.ParseAndRunCommand(cparam, this.checkBoxCanRun, this.captureGraphics, this.captureBitmap);
-
-                    // Cycle command list
-                    List<String> l = new List<String>(richTextScript.Lines);
-                    String tmp = l[0];
-                    l.RemoveAt(0);
-                    l.Add(tmp);
-                    richTextScript.Lines = l.ToArray();
-                }
-            }
-        }
-
-        private void checkBoxCreate_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxCreate.Checked)
-            {
-                timerCreate.Start();
-            }
-            else
-            {
-                timerCreate.Stop();
-            }
-        }
-
-        private void timerCreate_Tick(object sender, EventArgs e)
-        {
-            // check a lot of state. grab state of the world and begin to process
-            // creation steps are synchronous, since you never intend to do more than one of these at a time
-
-            // Holding down left-ctrl + left-alt will not set Click, will grab screen for find_post
-            // Holding down left-ctrl + left-shift will increment cchFindPost
-            // Holding down right-ctrl + right-alt will grab screen for avoid_post
-            // Holding down right-ctrl + right-shift will increment cchAvoidPost
-
-            // Holding down spacebar will publish!
-
-            if (Keyboard.IsKeyDown(Key.LeftCtrl)
-                && Keyboard.IsKeyDown(Key.LeftShift))
-            {
-                IncrementUD(numericUDFindPost);
-            }
-            else if (Keyboard.IsKeyDown(Key.LeftCtrl)
-                && Keyboard.IsKeyDown(Key.LeftAlt))
-            {
-                if (numericUDFindPost.Value == -1) numericUDFindPost.Value = 0;
-                Grab(postFindPicture[(int)numericUDFindPost.Value]
-                    , postFindText[(int)numericUDFindPost.Value]);
-                
-            }
-            else if (Keyboard.IsKeyDown(Key.RightCtrl)
-                && Keyboard.IsKeyDown(Key.RightShift))
-            {
-                IncrementUD(numericUDAvoidPost);
-            }
-            else if (Keyboard.IsKeyDown(Key.RightCtrl)
-                && Keyboard.IsKeyDown(Key.RightAlt))
-            {
-                if (numericUDAvoidPost.Value == -1) numericUDAvoidPost.Value = 0;
-                Grab(postAvoidPicture[(int)numericUDAvoidPost.Value]
-                    , postAvoidText[(int)numericUDAvoidPost.Value]);
-            }
-            else if (Keyboard.IsKeyDown(Key.Space))
-            {
-                //CLICKSCAN#X#Y#NUM_FIND#NUM_AVOID#NUM_FIND_POST#NUM_AVOID_POST
-                // #MS_WAIT_FIND#MS_FIND_STABILIZE#MS_WAIT_POST#MS_POST_STABILIZE
-                // #NAME1_FIND#X1#Y1#X2#Y2
-                string command = "SMARTCLICK";
-                command += "#" + textX.Text;
-                command += "#" + textY.Text;
-                command += "#" + (numericUDFind.Value + 1).ToString(); //number of each of these
-                command += "#" + (numericUDAvoid.Value + 1).ToString();
-                command += "#" + (numericUDFindPost.Value + 1).ToString();
-                command += "#" + (numericUDAvoidPost.Value + 1).ToString();
-                command += "#" + numericUDWait.Value.ToString(); // wait values
-                command += "#" + numericUDstabilize.Value.ToString();
-                command += "#" + numericUDPostWait.Value.ToString();
-                command += "#" + numericUDPostStabilize.Value.ToString();
-                command = AppendFinds(this.findText, this.findPicture, numericUDFind.Value, command);
-                command = AppendFinds(this.avoidText, this.avoidPicture, numericUDAvoid.Value, command);
-                command = AppendFinds(this.postFindText, this.postFindPicture, numericUDFindPost.Value, command);
-                command = AppendFinds(this.postAvoidText, this.postAvoidPicture, this.numericUDAvoidPost.Value, command);
-                richTextScript.Text += "\n" + command;
-                ClearCreate();
-            } //PUBLISH
-
-            // Holding down left-alt will grab the screen down-right from the mouse for Find[cchFind]
-            // Holding down left-shift will increment cchFind
-            // Holding down right-alt will grab the screen down-right from the mouse for Avoid[cchAvoid]
-            // Holding down right-shift will increment cchAvoid
-            else if (Keyboard.IsKeyDown(Key.LeftAlt))
-            {
-                if (numericUDFind.Value == -1) numericUDFind.Value = 0;
-                Grab(findPicture[(int)numericUDFind.Value]
-                    , findText[(int)numericUDFind.Value]);
-            }
-            else if (Keyboard.IsKeyDown(Key.LeftShift))
-            {
-                IncrementUD(numericUDFind);
-            }
-            else if (Keyboard.IsKeyDown(Key.RightAlt))
-            {
-                if (numericUDAvoid.Value == -1) numericUDAvoid.Value = 0;
-                Grab(avoidPicture[(int)numericUDAvoid.Value]
-                    , avoidText[(int)numericUDAvoid.Value]);
-            }
-            else if (Keyboard.IsKeyDown(Key.RightShift))
-            {
-                IncrementUD(numericUDAvoid);
-            }
-            // Holding down left-ctrl will set the Click position
-            else if (Keyboard.IsKeyDown(Key.LeftCtrl))
-            {
-                textX.Text = System.Windows.Forms.Cursor.Position.X.ToString();
-                textY.Text = System.Windows.Forms.Cursor.Position.Y.ToString();
-            }
-        }
-
-        private void IncrementUD(NumericUpDown numericUDAvoidPost)
-        {
-            if (numericUDAvoidPost.Value < numericUDAvoidPost.Maximum)
-            {
-                numericUDAvoidPost.Value += 1;
-            }
-        }
-
-        private string AppendFinds(TextBox[] findText, PictureBox[] findPicture, decimal v, string command)
-        {
-            for (int i = 0; i < (v + 1); i++)
-            {
-                command += findText[i].Text;
-                string name = findText[i].Text.Split('#')[1];
-                String fileName = string.Format(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                    @"\" + name);
-                findPicture[i].Image.Save(fileName);
-            }
-            return command;
-        }
-
-        private void ClearCreate()
-        {
-            numericUDAvoid.Value = -1;
-            numericUDAvoidPost.Value = -1;
-            numericUDFind.Value = -1;
-            numericUDFindPost.Value = -1;
-            numericUDItem.Value = 0;
-            pictureAvoid1.Image = null;
-            pictureAvoid2.Image = null;
-            pictureAvoid3.Image = null;
-            pictureAvoidPost1.Image = null;
-            pictureAvoidPost2.Image = null;
-            pictureAvoidPost3.Image = null;
-            pictureFind1.Image = null;
-            pictureFind2.Image = null;
-            pictureFind3.Image = null;
-            pictureFindPost1.Image = null;
-            pictureFindPost2.Image = null;
-            pictureFindPost3.Image = null;
-            textAvoid1.Text = "";
-            textAvoid2.Text = "";
-            textAvoid3.Text = "";
-            textPostAvoid1.Text = "";
-            textPostAvoid2.Text = "";
-            textPostAvoid3.Text = "";
-            textFind1.Text = "";
-            textFind2.Text = "";
-            textFind3.Text = "";
-            textPostFind1.Text = "";
-            textPostFind2.Text = "";
-            textPostFind3.Text = "";
-        }
-
-        private void Grab(PictureBox pictureBox, TextBox textBox)
-        {
-            int x = System.Windows.Forms.Cursor.Position.X;
-            int y = System.Windows.Forms.Cursor.Position.Y;
-            //textX.Text = x.ToString();
-            //textY.Text = y.ToString();
-            int width = (int)numericUDWidth.Value;
-            int height = (int)numericUDHeight.Value;
-            Rectangle tmpCapture = new Rectangle(x, y, width, height);
-            this.captureGraphics.CopyFromScreen(
-                this.captureRectangle.Left
-                , captureRectangle.Top, 0, 0
-                , captureRectangle.Size);
-            pictureBox.Image = ScanParameters.Copy(this.captureBitmap, tmpCapture);
-            string name = textScenario.Text + "_" + textItem.Text + "_" + numericUDItem.Value.ToString();
-            textBox.Text = "#" + name + ".png#"
-                + (x).ToString() + "#" + (y).ToString() + "#"
-                + (x + width + 1) + "#" + (y + height + 1).ToString();
-            numericUDItem.Value += 1;
-            return;
-        }
-
+        
         public static async Task<int> RunProcessAsync(string fileName, string args)
         {
             using (var process = new Process
@@ -505,7 +148,23 @@ namespace FateGrandOrderPlus
             await Task.Delay(20);
         }
 
-        private async Task WaitForADBBitmap(string name, string machineName, Rectangle location, int timeout=5)
+        private async Task ADBKeyEvent(string s, string machineName)
+        {
+            Process process = new Process();
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            processStartInfo.FileName = @"cmd.exe";
+            processStartInfo.WorkingDirectory = @"C:\Users\HDSwap\Downloads\autoscrn";
+            processStartInfo.Arguments = @"/C C:\Users\HDSwap\Downloads\autoscrn\keyevent.cmd " + s + " " + machineName;
+            processStartInfo.UseShellExecute = true;
+            process.StartInfo = processStartInfo;
+            process.Start();
+            process.WaitForExit();
+            //await RunProcessAsync(process);
+            await Task.Delay(20);
+        }
+
+        private async Task<Rectangle> WaitForADBBitmap(string name, string machineName, Rectangle location, int timeout=5)
         {
             for (int i = 0; i < timeout*5; i++)
             {
@@ -517,16 +176,51 @@ namespace FateGrandOrderPlus
                 bool found = Scan.Seek(find, avoid);
                 if (found)
                 {
-                     return;
+                    return Scan.SearchBitmap(needle, haystack, 0.03); //hopefully NO DUPLICATE LOCATIONS!!! assuming true
                 }
-                await Task.Delay(50);
+                await Task.Delay(40);
             }
             throw new ArithmeticException("COULD NOT FIND " + name);
         }
 
-        private async Task WaitForMainMenu(string machineName)
+        private async Task WaitForAndMovePastMainMenu(string machineName, bool findNext=false)
         {
-            await WaitForADBBitmap("CHALDEA_MENU_1.png", machineName, new Rectangle(437, 764, 23, 27));
+            if (!findNext)
+            {
+                //await Task.Delay(1000);
+                await WaitForADBBitmap("CHALDEA_MENU_1.png", machineName, new Rectangle(471, 33, 4, 50));
+                await ADBTap(640, 130, machineName); //TOUCH 1st BATTLE OPTION
+            }
+            else
+            {
+                string result = "";
+                int countdown = 20;
+                while (result != "SUPPORT_MENU_1.png" && countdown > 0)
+                {
+                    countdown--;
+                    Rectangle nextLocation = await WaitForADBBitmap("NEXT_TIP.png", machineName, new Rectangle(0, 0, 480, 854), 8);
+                    int tapX = nextLocation.X - 38;
+                    int tapY = nextLocation.Y;
+                    int rotatedTapY = 480 - tapX; //assumed height!!!
+                    if (rotatedTapY > 480)
+                    {
+                        rotatedTapY = 480; //max screen spot... not likely correct..., think more on this later
+                    }
+                    int rotatedTapX = tapY;
+                    await ADBTap(rotatedTapX, rotatedTapY, machineName);
+                    List<string> supportOrNext = new List<string>();
+                    supportOrNext.Add("SUPPORT_MENU_1.png");
+                    supportOrNext.Add("NEXT_TIP.png");
+                    List<Rectangle> locationsToCheck = new List<Rectangle>();
+                    locationsToCheck.Add(new Rectangle(388, 771, 10, 15));
+                    locationsToCheck.Add(new Rectangle(0, 0, 480, 854));
+                    result = await WaitForOneADBBitmapWhileTapping(supportOrNext, locationsToCheck, new Point(-1, -1), machineName, 30);
+                }
+                if (result != "SUPPORT_MENU_1.png")
+                {
+                    throw new ArithmeticException("NOPE! WEIRD LOOP WITH TOO MANY NEXT OPTIONS");
+                }
+            }
         }
 
         private async Task<int[]> CheckBattlePositions(string machineName)
@@ -596,7 +290,10 @@ namespace FateGrandOrderPlus
                         break;
                     }
                 }
-                await ADBTap(tapLocation.X, tapLocation.Y, machineName);
+                if (tapLocation.X >= 0)
+                {
+                    await ADBTap(tapLocation.X, tapLocation.Y, machineName);
+                }
                 await Task.Delay(20); //200ms? lower due to the tap pause
                 iterations++;
             }
@@ -632,7 +329,7 @@ namespace FateGrandOrderPlus
             await ADBTap(220, 140, machineName);//TAP EDIT ALL
             await WaitForADBBitmap("CLEAR_SEARCH_5.png", machineName, new Rectangle(310, 182, 25, 75), 9); //11, 45
             await ADBDel(machineName);
-            await ADBType("999999", machineName);  //TYPE 99
+            await ADBType("994740", machineName);  //TYPE 99
             await Task.Delay(200);//TEXT APPEARS NEAR INSTANTLY. LETTING IT SETTLE (?)
             await ADBTap(615, 410, machineName);//CONFIRM CHANGE
             await WaitForADBBitmap("CLEAR_SEARCH_1.png", machineName, new Rectangle(400, 329, 12, 33), 9);
@@ -642,7 +339,7 @@ namespace FateGrandOrderPlus
         private Object BattleLock1 = new Object();
         private Object BattleLock2 = new Object();
         private Object BattleLock3 = new Object();
-        private async Task RunRealBattle(Object battleLock, string machineName, bool intro=true)
+        private async Task RunRealBattle(Object battleLock, string machineName, bool intro=true, bool findNext=false)
         {
 
             lock (battleLock)
@@ -653,25 +350,25 @@ namespace FateGrandOrderPlus
                 }
                 BattleRunning[machineName] = true;
             }
-            while (checkBoxCanRun.Checked)
+            while (checkBoxLoopBattles.Checked)
             {
                 try
                 {
 
                     //await ClearSearchModify(machineName);
                     //return;
-
                     List<string> attackOrFinished = new List<string>();
                     attackOrFinished.Add("BATTLE_ATTACK_1.png");
                     attackOrFinished.Add("BATTLE_FINISHED_NEXT_1.png");
+                    //attackOrFinished.Add("BATTLE_FINISHED_GET_1.png");
                     List<Rectangle> locationsToCheck = new List<Rectangle>();
                     locationsToCheck.Add(new Rectangle(27, 735, 20, 50));
                     locationsToCheck.Add(new Rectangle(20, 702, 10, 40));
+                    //locationsToCheck.Add(new Rectangle(116, 572, 30, 4));
                     Point tapLocation = new Point(356, 205);
                     if (intro)
                     {
-                        await WaitForMainMenu(machineName);
-                        await ADBTap(640, 130, machineName); //TOUCH 1st BATTLE OPTION
+                        await WaitForAndMovePastMainMenu(machineName, findNext);
                         await WaitForADBBitmap("SUPPORT_MENU_1.png", machineName, new Rectangle(388, 771, 10, 15), 22);
                         await ADBTap(400, 165, machineName); //TOUCH 1st SUPPORT OPTION
                         await WaitForADBBitmap("SUPPORT_MENU_2.png", machineName, new Rectangle(24, 815, 15, 22), 24);
@@ -699,11 +396,24 @@ namespace FateGrandOrderPlus
                             battleFinished = true;
                         }
                     }
+                    tapLocation = new Point(135, 120);
+                    bool postBattleDone = false;
+                    
+                    attackOrFinished.Add("CHALDEA_MENU_1.png");
+                    locationsToCheck.Add(new Rectangle(471, 33, 4, 50));
+                    while (!postBattleDone)
+                    {
+                        result = await WaitForOneADBBitmapWhileTapping(attackOrFinished, locationsToCheck, tapLocation, machineName, 140); //TAP IMPATIENTLY UNTIL 
+                        if (result == "CHALDEA_MENU_1.png") // main menu appears
+                        {
+                            postBattleDone = true;
+                        }
+                    }
                 }
                 catch (ArithmeticException e)
                 {
                     Console.WriteLine(e);
-                    checkBoxCanRun.Checked = false;
+                    checkBoxLoopBattles.Checked = false;
                 }
             }
             lock(battleLock)
@@ -712,40 +422,52 @@ namespace FateGrandOrderPlus
             }
             return;
         }
+        
 
         Dictionary<string, bool> BattleRunning = new Dictionary<string, bool>() {
-            { "LGLS6652c36d46f", false},
-            { "LGLS6654ea13159", false},
-            { "LGLS665cf91cebc", false}
+            { "LGLS6652c36d46f", false}, //For a while, this account has had 1-star berseker in charge at 4960
+            { "LGLS6654ea13159", false}, //
+            { "LGLS665cf91cebc", false}  //Account with Max Level Vlad and Carmilla
         };
         private void buttonGrabAndroid_Click(object sender, EventArgs e)
         {
-            RunRealBattle(BattleLock1, "LGLS6652c36d46f"); //async!
+            RunRealBattle(BattleLock1, "LGLS6652c36d46f", checkBoxIntro.Checked, checkBoxFindNext.Checked); //async!
         }
 
         private void buttonGrabAndroid2_Click(object sender, EventArgs e)
         {
-            RunRealBattle(BattleLock2, "LGLS6654ea13159"); //2nd machine name
+            RunRealBattle(BattleLock2, "LGLS6654ea13159", checkBoxIntro.Checked, checkBoxFindNext.Checked); //2nd machine name
         }
 
         private void buttonGrabAndroid3_Click(object sender, EventArgs e)
         {
-            RunRealBattle(BattleLock3, "LGLS665cf91cebc"); //3rd machine name
+            RunRealBattle(BattleLock3, "LGLS665cf91cebc", checkBoxIntro.Checked, checkBoxFindNext.Checked); //3rd machine name
+        }
+        
+        private void buttonSearchLHSInRHS_Click(object sender, EventArgs e)
+        {
+            Bitmap lhs = (Bitmap)Bitmap.FromFile(textBoxLHS.Lines[0]);
+            Bitmap rhs = (Bitmap)Bitmap.FromFile(textBoxRHS.Lines[0]);
+            Rectangle result = Scan.SearchBitmap(lhs, rhs, 0.03);
+            if (result != null)
+            {
+                labelCompareOutput.Text = result.ToString();
+            }
+            else
+            {
+                labelCompareOutput.Text = "NO MATCH";
+            }
+            lhs.Dispose();
+            rhs.Dispose();
+        }
+        
+        private void buttonOnOffAll_Click(object sender, EventArgs e)
+        {
+            foreach (string machineName in BattleRunning.Keys)
+            {
+                ADBKeyEvent("26", machineName);
+            }
         }
 
-        private void androidNoStart_Click(object sender, EventArgs e)
-        {
-            RunRealBattle(BattleLock1, "LGLS6652c36d46f", false); //async!
-        }
-
-        private void androidNoStart2_Click(object sender, EventArgs e)
-        {
-            RunRealBattle(BattleLock2, "LGLS6654ea13159", false); //2nd machine name
-        }
-
-        private void androidNoStart3_Click(object sender, EventArgs e)
-        {
-            RunRealBattle(BattleLock3, "LGLS665cf91cebc", false); //3rd machine name
-        }
     }
 }
